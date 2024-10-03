@@ -1,3 +1,5 @@
+using EnglishClass.Common.Result;
+
 namespace EnglishClass.Domain.Entities
 {
     public readonly record struct Money

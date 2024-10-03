@@ -1,6 +1,8 @@
 using System.Net.Mail;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using EnglishClass.Common.Extensions;
+using EnglishClass.Common.Result;
 
 namespace EnglishClass.Domain.Entities
 {

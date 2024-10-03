@@ -1,3 +1,5 @@
+using EnglishClass.Common.Result;
+
 namespace EnglishClass.Domain.Entities
 {
     [Serializable]
