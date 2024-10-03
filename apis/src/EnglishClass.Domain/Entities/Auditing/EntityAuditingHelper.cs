@@ -1,5 +1,4 @@
-using Common.Extensions;
-using Common.Timing;
+using EnglishClass.Common.Extensions;
 
 namespace EnglishClass.Domain.Entities.Auditing
 {
@@ -16,7 +15,7 @@ namespace EnglishClass.Domain.Entities.Auditing
 
             if (entityWithCreationTime.CreationTime == default)
             {
-                entityWithCreationTime.CreationTime = Clock.Now;
+                entityWithCreationTime.CreationTime = DateTime.UtcNow;
             }
 
             if (entityAsObj is not ICreationAudited)
@@ -46,7 +45,7 @@ namespace EnglishClass.Domain.Entities.Auditing
         {
             if (entityAsObj is IHasModificationTime)
             {
-                entityAsObj.As<IHasModificationTime>().LastModificationTime = Clock.Now;
+                entityAsObj.As<IHasModificationTime>().LastModificationTime = DateTime.UtcNow;
             }
 
             if (entityAsObj is not IModificationAudited)
@@ -72,7 +71,7 @@ namespace EnglishClass.Domain.Entities.Auditing
         {
             if (entityAsObj is IHasDeletionTime)
             {
-                entityAsObj.As<IHasDeletionTime>().DeletionTime = Clock.Now;
+                entityAsObj.As<IHasDeletionTime>().DeletionTime = DateTime.UtcNow;
             }
 
             if (entityAsObj is not IDeletionAudited)
