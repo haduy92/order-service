@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
-using EnglishClass.Application.Interfaces;
+using EnglishClass.Application.Interfaces.Identity;
 using EnglishClass.Application.Models;
 using EnglishClass.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;

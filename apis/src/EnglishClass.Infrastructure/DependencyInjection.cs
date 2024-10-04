@@ -1,5 +1,6 @@
 using AutoMapper;
 using EnglishClass.Application.Interfaces;
+using EnglishClass.Application.Interfaces.Identity;
 using EnglishClass.Infrastructure.Data;
 using EnglishClass.Infrastructure.Mapper;
 using EnglishClass.Infrastructure.Services;
