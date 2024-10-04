@@ -9,9 +9,9 @@ namespace EnglishClass.Application.Interfaces;
 
 public interface ICardService : ITransientDependency
 {
-    Task<IEnumerable<CardModel>> GetByUserId(Guid id);
-    Task<CardModel> GetById(Guid id);
-    Task<Guid> Create(CardModel card);
+    Task<IEnumerable<CreateCardRequest>> GetByUserId(Guid id);
+    Task<CreateCardRequest> GetById(Guid id);
+    Task<Guid> Create(CreateCardRequest card);
     Task Update(string text, string description);
     Task Delete(Guid id);
 }
