@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
+using EnglishClass.Application.Interfaces.Persistence;
 using EnglishClass.Domain.Entities;
 using EnglishClass.Infrastructure.Data;
-using EnglishClass.Infrastructure.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EnglishClass.Infrastructure.Repositories;
