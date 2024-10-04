@@ -2,12 +2,12 @@ using System.Linq.Expressions;
 using EnglishClass.Common.Dependencies;
 using EnglishClass.Domain.Entities;
 
-namespace EnglishClass.Infrastructure.Interfaces.Repositories;
+namespace EnglishClass.Application.Interfaces.Persistence;
 
 /// <summary>
-/// This interface is a shortcut to IRepository<TEntity, Guid>.
+/// This interface is a shortcut to IRepository<TEntity, int>.
 /// </summary>
-public interface IRepository<TEntity> : IRepository<TEntity, Guid> where TEntity : class, IEntity<Guid>
+public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity : class, IEntity<int>
 { }
 
 /// <summary>

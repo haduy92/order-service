@@ -2,7 +2,7 @@ using System.Security.Claims;
 using EnglishClass.Application.Models;
 using EnglishClass.Common.Dependencies;
 
-namespace EnglishClass.Application.Interfaces;
+namespace EnglishClass.Application.Interfaces.Identity;
 
 public interface IAuthService : ITransientDependency
 {

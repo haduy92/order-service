@@ -1,6 +1,6 @@
 using EnglishClass.Domain.Entities;
 
-namespace EnglishClass.Infrastructure.Interfaces.Repositories;
+namespace EnglishClass.Application.Interfaces.Persistence.Cards;
 
 public interface ICardRepository : IRepository<Card>
 { }
