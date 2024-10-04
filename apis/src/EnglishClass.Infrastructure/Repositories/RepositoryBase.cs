@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using EnglishClass.Domain.Entities;
+using EnglishClass.Infrastructure.Data;
 using EnglishClass.Infrastructure.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,6 @@
 using EnglishClass.Domain.Entities;
-using EnglishClass.Infrastructure.Interfaces;
+using EnglishClass.Infrastructure.Data;
+using EnglishClass.Infrastructure.Interfaces.Repositories;
 
 namespace EnglishClass.Infrastructure.Repositories;
 

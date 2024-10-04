@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace EnglishClass.Infrastructure.Repositories;
+namespace EnglishClass.Infrastructure.Data;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
@@ -11,7 +11,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         var configuration = new ConfigurationBuilder()
             .AddUserSecrets<AppDbContext>()
             .Build();
-        var connStr = configuration.GetValue<string>("ConnectionStrings:CompliancePpsr");
+        var connStr = configuration.GetValue<string>("DefaultConnectionStrings");
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseNpgsql(connStr);
 
