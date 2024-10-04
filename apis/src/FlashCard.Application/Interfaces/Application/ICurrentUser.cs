@@ -1,6 +1,6 @@
 namespace FlashCard.Application.Interfaces.Application;
 
-public interface ICurrentUserService
+public interface ICurrentUser
 {
     int UserId { get; }
 }
