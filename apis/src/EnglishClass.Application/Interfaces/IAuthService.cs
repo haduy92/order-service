@@ -6,8 +6,8 @@ namespace EnglishClass.Application.Interfaces;
 
 public interface IAuthService : ITransientDependency
 {
-    Task<bool> SignAsync(SignInRequest signInRequest);
+    Task<bool> SignInAsync(SignInRequest signInRequest);
     Task SignOutAsync();
     Task<Response> SignUpAsync(SignUpRequest signUpRequest);
-    Task<UserDto> GetCurrentUserAsync(ClaimsPrincipal user);
+    Task<UserDto?> GetCurrentUserAsync(ClaimsPrincipal user);
 }
