@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using EnglishClass.Common.Dependencies;
 using EnglishClass.Domain.Entities;
 
-namespace EnglishClass.Infrastructure.Interfaces;
+namespace EnglishClass.Infrastructure.Interfaces.Repositories;
 
 /// <summary>
 /// This interface is a shortcut to IRepository<TEntity, Guid>.

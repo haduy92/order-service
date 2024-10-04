@@ -1,5 +1,5 @@
 using EnglishClass.Domain.Entities.Histories;
-using EnglishClass.Infrastructure.Interfaces;
+using EnglishClass.Infrastructure.Interfaces.Repositories;
 
 namespace EnglishClass.Infrastructure.Repositories;
 

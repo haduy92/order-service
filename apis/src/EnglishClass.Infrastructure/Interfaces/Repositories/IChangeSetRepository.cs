@@ -1,7 +1,7 @@
 using EnglishClass.Common.Dependencies;
 using EnglishClass.Domain.Entities.Histories;
 
-namespace EnglishClass.Infrastructure.Interfaces;
+namespace EnglishClass.Infrastructure.Interfaces.Repositories;
 
 public interface IChangeSetRepository : ITransientDependency
 {
