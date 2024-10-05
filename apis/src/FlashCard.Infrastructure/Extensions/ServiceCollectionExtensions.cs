@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
-using FlashCard.Application.Interfaces;
 using FlashCard.Application.Interfaces.Identity;
 using FlashCard.Infrastructure.Data;
 using FlashCard.Infrastructure.Mapper;
@@ -9,12 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FlashCard.Infrastructure;
+namespace FlashCard.Infrastructure.Extensions;
 
-public static class DependencyInjection
+public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
         // Add IdentityDbContext

@@ -1,9 +1,8 @@
 using FlashCard.Application.Models;
-using FlashCard.Common.Dependencies;
 
 namespace FlashCard.Application.Interfaces.Persistence.Cards;
 
-public interface ICardService : ITransientDependency
+public interface ICardService
 {
     Task<IEnumerable<CreateCardRequest>> GetByUserId(int id);
     Task<CreateCardRequest> GetById(int id);

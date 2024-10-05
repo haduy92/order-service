@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using FlashCard.Common.Dependencies;
 using FlashCard.Domain.Entities;
 
 namespace FlashCard.Application.Interfaces.Persistence;
@@ -15,8 +14,7 @@ public interface IRepository<TEntity> : IRepository<TEntity, int> where TEntity 
 /// </summary>
 /// <typeparam name="TEntity">Main Entity type this repository works on</typeparam>
 /// <typeparam name="TPrimaryKey">Primary key type of the entity</typeparam>
-public interface IRepository<TEntity, TPrimaryKey> : ITransientDependency
-    where TEntity : class, IEntity<TPrimaryKey>
+public interface IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey>
 {
     /// <summary>
     /// Used to get a IQueryable that is used to retrieve entities from entire table.

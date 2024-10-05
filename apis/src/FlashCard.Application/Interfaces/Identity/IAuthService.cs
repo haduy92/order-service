@@ -1,10 +1,9 @@
 using System.Security.Claims;
 using FlashCard.Application.Models;
-using FlashCard.Common.Dependencies;
 
 namespace FlashCard.Application.Interfaces.Identity;
 
-public interface IAuthService : ITransientDependency
+public interface IAuthService
 {
     Task<bool> SignInAsync(SignInRequest signInRequest);
     Task SignOutAsync();
