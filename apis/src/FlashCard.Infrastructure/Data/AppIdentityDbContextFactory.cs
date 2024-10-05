@@ -4,17 +4,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace FlashCard.Infrastructure.Data;
 
-public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+public class AppIdentityDbContextFactory : IDesignTimeDbContextFactory<AppIdentityDbContext>
 {
-    public AppDbContext CreateDbContext(string[] args)
+    public AppIdentityDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
-            .AddUserSecrets<AppDbContext>()
+            .AddUserSecrets<AppIdentityDbContext>()
             .Build();
         var connStr = configuration.GetConnectionString("DefaultConnection");
-        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<AppIdentityDbContext>();
         optionsBuilder.UseNpgsql(connStr);
 
-        return new AppDbContext(optionsBuilder.Options);
+        return new AppIdentityDbContext(optionsBuilder.Options);
     }
 }
