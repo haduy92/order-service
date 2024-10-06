@@ -6,6 +6,5 @@ public class ApplicationProfile : Profile
 {
     public ApplicationProfile()
     {
-
     }
 }

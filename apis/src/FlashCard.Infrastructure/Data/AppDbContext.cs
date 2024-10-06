@@ -12,6 +12,11 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<Card>()
+            .HasIndex(p => new { p.Title, p.Description })
+            .HasMethod("GIN")
+            .IsTsVectorExpressionIndex("english");
+
         base.OnModelCreating(builder);
     }
 }

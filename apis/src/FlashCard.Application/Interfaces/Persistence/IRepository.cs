@@ -46,7 +46,7 @@ public interface IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntit
     /// Updates an existing entity.
     /// </summary>
     /// <param name="entity">Entity</param>
-    Task<TEntity> UpdateAsync(TEntity entity);
+    Task UpdateAsync(TEntity entity);
 
     /// <summary>
     /// Deletes an entity.

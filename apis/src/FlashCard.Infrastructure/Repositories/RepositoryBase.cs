@@ -24,20 +24,20 @@ public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity
         _db = dbContext.Set<TEntity>();
     }
 
-    public Task DeleteAsync(TEntity entity)
+    public async Task DeleteAsync(TEntity entity)
     {
         _db.Remove(entity);
-        return Task.CompletedTask;
+        await _dbContext.SaveChangesAsync();
     }
 
-    public Task DeleteAsync(TPrimaryKey id)
+    public async Task DeleteAsync(TPrimaryKey id)
     {
         var entity = _db.Find(id);
         if (entity != null)
         {
             _db.Remove(entity);
+            await _dbContext.SaveChangesAsync();
         }
-        return Task.CompletedTask;
     }
 
     public IQueryable<TEntity> GetAll(params Expression<Func<TEntity, object>>[] includes)
@@ -69,10 +69,9 @@ public abstract class RepositoryBase<TEntity, TPrimaryKey> : IRepository<TEntity
         return Task.FromResult(entity);
     }
 
-    public Task<TEntity> UpdateAsync(TEntity entity)
+    public async Task UpdateAsync(TEntity entity)
     {
         _db.Update(entity);
-        _dbContext.SaveChanges();
-        return Task.FromResult(entity);
+        await _dbContext.SaveChangesAsync();
     }
 }

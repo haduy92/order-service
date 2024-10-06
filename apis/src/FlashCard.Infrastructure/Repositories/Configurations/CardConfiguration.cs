@@ -15,7 +15,7 @@ public class CardConfiguration : IEntityTypeConfiguration<Card>
 
         builder.ToTable("cards");
         builder.HasKey(u => u.Id);
-        builder.Property(u => u.Text).HasMaxLength(255).IsRequired();
+        builder.Property(u => u.Title).HasMaxLength(255).IsRequired();
         builder.Property(u => u.Description).IsRequired();
     }
 }
