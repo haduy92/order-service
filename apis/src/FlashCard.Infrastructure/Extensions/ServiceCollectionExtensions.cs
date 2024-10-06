@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using FlashCard.Application.Interfaces.Identity;
+using FlashCard.Infrastructure.Configurations;
 using FlashCard.Infrastructure.Data;
 using FlashCard.Infrastructure.Mapper;
+using FlashCard.Infrastructure.Models;
 using FlashCard.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +17,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
         // Add IdentityDbContext
         services.AddDbContext<AppIdentityDbContext>(options =>
             options.UseNpgsql(
@@ -32,7 +31,7 @@ public static class ServiceCollectionExtensions
                 b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
         // Add identity auth
-        services.AddIdentity<IdentityUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddDefaultTokenProviders();
 

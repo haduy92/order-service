@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Identity;
+using FlashCard.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlashCard.Infrastructure.Data;
 
-public class AppIdentityDbContext : IdentityDbContext<IdentityUser>
+public class AppIdentityDbContext : IdentityDbContext<ApplicationUser>
 {
     public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
     {

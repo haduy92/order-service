@@ -5,8 +5,8 @@ namespace FlashCard.Application.Interfaces.Identity;
 
 public interface IAuthService
 {
-    Task<bool> SignInAsync(SignInRequest signInRequest);
+    Task<IdentityResponse> SignInAsync(SignInRequest signInRequest);
+    Task<IdentityResponse> SignUpAsync(SignUpRequest signUpRequest);
     Task SignOutAsync();
-    Task<Response> SignUpAsync(SignUpRequest signUpRequest);
     Task<UserDto?> GetCurrentUserAsync(ClaimsPrincipal user);
 }
