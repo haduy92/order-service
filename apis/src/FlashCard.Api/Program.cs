@@ -12,10 +12,13 @@ builder.Services.AddSwaggerGenWithAuth();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAuthServices(builder.Configuration);
-builder.Services.AddDependencyInjections();
+builder.Services.AddExceptionHandlers();
+builder.Services.AddDIs();
+
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

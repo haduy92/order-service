@@ -1,5 +1,6 @@
 using System.Text;
 using Asp.Versioning;
+using FlashCard.Api.ExceptionHandlers;
 using FlashCard.Api.Services;
 using FlashCard.Application.Interfaces.Application;
 using FlashCard.Infrastructure.Configurations;
@@ -11,11 +12,21 @@ namespace FlashCard.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDependencyInjections(this IServiceCollection services)
+    public static IServiceCollection AddDIs(this IServiceCollection services)
     {
         services.AddScoped<CurrentUser>();
         services.AddScoped<ICurrentUserInitializer, CurrentUser>(x => x.GetRequiredService<CurrentUser>());
         services.AddScoped<ICurrentUser, CurrentUser>(x => x.GetRequiredService<CurrentUser>());
+
+        return services;
+    }
+
+    public static IServiceCollection AddExceptionHandlers(this IServiceCollection services)
+    {
+        services.AddExceptionHandler<BadRequestExceptionHandler>();
+        services.AddExceptionHandler<NotFoundExceptionHandler>();
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         return services;
     }

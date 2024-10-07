@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using FlashCard.Api.Exceptions;
 using FlashCard.Application.Interfaces.Application;
 using FlashCard.Application.Models;
 using FlashCard.Infrastructure.Exceptions;
@@ -35,42 +36,24 @@ public class CardController : ControllerBase
         }
         catch (EntityNotFoundException ex)
         {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
+            throw new NotFoundException(ex.Message);
         }
     }
 
     [HttpGet]
     public async Task<ActionResult<SearchCardResponse>> SearchAsync([FromQuery] SearchCardRequest request)
     {
-        try
-        {
-            var response = await _cardService.SearchAsync(request);
+        var response = await _cardService.SearchAsync(request);
 
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<int>> CreateAsync([FromBody] CreateCardRequest request)
     {
-        try
-        {
-            var response = await _cardService.CreateAsync(request);
+        var response = await _cardService.CreateAsync(request);
 
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        return Ok(response);
     }
 
     [HttpPut("{id:int}")]
@@ -84,11 +67,7 @@ public class CardController : ControllerBase
         }
         catch (EntityNotFoundException ex)
         {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
+            throw new NotFoundException(ex.Message);
         }
     }
 
@@ -103,11 +82,7 @@ public class CardController : ControllerBase
         }
         catch (EntityNotFoundException ex)
         {
-            return NotFound(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
+            throw new NotFoundException(ex.Message);
         }
     }
 }
