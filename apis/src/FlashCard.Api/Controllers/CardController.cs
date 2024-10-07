@@ -25,7 +25,7 @@ public class CardController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<CardDto>> GetById([FromQuery] int id)
+    public async Task<ActionResult<CardDto>> GetById(int id)
     {
         try
         {
