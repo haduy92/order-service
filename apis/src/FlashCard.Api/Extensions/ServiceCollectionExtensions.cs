@@ -92,7 +92,7 @@ public static class ServiceCollectionExtensions
             })
             .AddJwtBearer(x =>
             {
-                var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+                var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
 
                 x.RequireHttpsMetadata = false;
                 x.TokenValidationParameters = new TokenValidationParameters

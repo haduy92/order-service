@@ -20,7 +20,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.Configure<OpenAIOptions>(configuration.GetSection(OpenAIOptions.SectionName));
+
         // Add IdentityDbContext
         services.AddDbContext<AppIdentityDbContext>(options =>
             options.UseNpgsql(
@@ -44,6 +46,7 @@ public static class ServiceCollectionExtensions
         // Add services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICardService, CardService>();
+        services.AddScoped<ITextGeneratingService, TextGeneratingService>();
 
         // Add mapper profile
         MapperConfiguration mappingConfig = new(mc =>

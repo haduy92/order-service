@@ -85,4 +85,19 @@ public class CardController : ControllerBase
             throw new NotFoundException(ex.Message);
         }
     }
+
+    [HttpGet("generate-description")]
+    public async Task<ActionResult> GenerateDescriptionAsync([FromQuery] string title)
+    {
+        try
+        {
+            var result = await _cardService.GenerateDescriptionByTitleAsync(title);
+
+            return Ok(result);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            throw new NotFoundException(ex.Message);
+        }
+    }
 }

@@ -9,4 +9,5 @@ public interface ICardService
     Task<int> CreateAsync(CreateCardRequest request, CancellationToken cancellationToken = default);
     Task UpdateAsync(int id, UpdateCardRequest request, CancellationToken cancellationToken = default);
     Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+    Task<string> GenerateDescriptionByTitleAsync(string title);
 }

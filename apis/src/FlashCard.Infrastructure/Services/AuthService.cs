@@ -15,17 +15,17 @@ public class AuthService : IAuthService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IMapper _mapper;
-    private readonly JwtOptions _jwtSettings;
+    private readonly JwtOptions _jwtOptions;
 
     public AuthService(UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IMapper mapper,
-        IOptions<JwtOptions> jwtSettings)
+        IOptions<JwtOptions> jwtOptions)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _mapper = mapper;
-        _jwtSettings = jwtSettings.Value;
+        _jwtOptions = jwtOptions.Value;
     }
 
     public async Task<IdentityResponse> SignInAsync(SignInRequest request)
@@ -48,7 +48,7 @@ public class AuthService : IAuthService
                 Succeeded = true,
                 UserId = user!.Id,
                 Token = token,
-                Expire = _jwtSettings.ExpirationTime
+                Expire = _jwtOptions.ExpirationTime
             };
         }
 
@@ -85,7 +85,7 @@ public class AuthService : IAuthService
                 Succeeded = true,
                 UserId = createdUser!.Id,
                 Token = token,
-                Expire = _jwtSettings.ExpirationTime
+                Expire = _jwtOptions.ExpirationTime
             };
         }
 
@@ -118,10 +118,10 @@ public class AuthService : IAuthService
     private string GenerateToken(ApplicationUser user)
     {
         return TokenHelper.CreateToken(user.Id, user.UserName ?? string.Empty,
-            _jwtSettings.Issuer,
-            _jwtSettings.Audience,
-            _jwtSettings.Key,
-            _jwtSettings.ExpirationTime);
+            _jwtOptions.Issuer,
+            _jwtOptions.Audience,
+            _jwtOptions.Key,
+            _jwtOptions.ExpirationTime);
     }
 
     private IdentityResponse ErrorResponse(IDictionary<string, string>? errors = null)

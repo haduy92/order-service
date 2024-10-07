@@ -11,11 +11,15 @@ namespace FlashCard.Infrastructure.Services;
 public class CardService : ICardService
 {
     private readonly ICardRepository _cardRepository;
+    private readonly ITextGeneratingService _textGeneratingService;
     private readonly IMapper _mapper;
 
-    public CardService(ICardRepository cardRepository, IMapper mapper)
+    public CardService(ICardRepository cardRepository,
+        ITextGeneratingService textGeneratingService,
+        IMapper mapper)
     {
         _cardRepository = cardRepository;
+        _textGeneratingService = textGeneratingService;
         _mapper = mapper;
     }
 
@@ -70,6 +74,11 @@ public class CardService : ICardService
         card.Title = request.Title;
         card.Description = request.Description;
         await _cardRepository.UpdateAsync(card);
+    }
+
+    public async Task<string> GenerateDescriptionByTitleAsync(string title)
+    {
+        return await _textGeneratingService.GenerateTextAsync(title);
     }
 
     private async Task<Card> EnsureGetByIdAsync(int id)
