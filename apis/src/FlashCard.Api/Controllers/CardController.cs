@@ -24,6 +24,25 @@ public class CardController : ControllerBase
         _logger = logger;
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CardDto>> GetById([FromQuery] int id)
+    {
+        try
+        {
+            var response = await _cardService.GetByIdAsync(id);
+
+            return Ok(response);
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
     [HttpGet]
     public async Task<ActionResult<SearchCardResponse>> SearchAsync([FromQuery] SearchCardRequest request)
     {
@@ -54,7 +73,7 @@ public class CardController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateAsync([FromRoute] int id, [FromBody] UpdateCardRequest request, CancellationToken cancellationToken)
     {
         try
@@ -73,7 +92,7 @@ public class CardController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id, CancellationToken cancellationToken)
     {
         try

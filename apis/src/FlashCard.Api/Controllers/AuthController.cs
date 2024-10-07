@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using FlashCard.Application.Interfaces.Identity;
 using FlashCard.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlashCard.Api.Controllers;
@@ -8,6 +9,7 @@ namespace FlashCard.Api.Controllers;
 [ApiExplorerSettings(GroupName = "auth")]
 [ApiVersion("1.0")]
 [ApiController]
+[AllowAnonymous]
 [Route("api/v{version:apiVersion}/auth")]
 public class AuthController : ControllerBase
 {
@@ -21,14 +23,6 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    /// <summary>
-    /// Sign in method
-    /// </summary>
-    /// <param name="request"></param>
-    /// <response code="400">Validation of request failed</response>
-    /// <response code="500">Unexpected server error</response>
-    /// <returns>True or False</returns>
-    [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpPost("signin")]
     public async Task<ActionResult<ResponseBase>> SignInAsync(SignInRequest request)
     {
