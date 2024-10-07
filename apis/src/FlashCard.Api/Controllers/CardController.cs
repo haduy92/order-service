@@ -2,15 +2,16 @@ using Asp.Versioning;
 using FlashCard.Application.Interfaces.Application;
 using FlashCard.Application.Models;
 using FlashCard.Infrastructure.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlashCard.Api.Controllers;
 
-
 [ApiExplorerSettings(GroupName = "card")]
 [ApiVersion("1.0")]
 [ApiController]
-[Route("api/v{version:apiVersion}/card")]
+[Authorize]
+[Route("api/v{version:apiVersion}/cards")]
 public class CardController : ControllerBase
 {
     private readonly ICardService _cardService;
@@ -23,15 +24,7 @@ public class CardController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// Search cards by card title
-    /// </summary>
-    /// <param name="request"></param>
-    /// <response code="200">Successfully return search result</response>
-    /// <response code="500">Unexpected server error</response>
-    /// <returns>True or False</returns>
-    [ProducesResponseType(typeof(SearchCardResponse), StatusCodes.Status200OK)]
-    [HttpGet("search")]
+    [HttpGet]
     public async Task<ActionResult<SearchCardResponse>> SearchAsync([FromQuery] SearchCardRequest request)
     {
         try
@@ -46,14 +39,6 @@ public class CardController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Create a new card
-    /// </summary>
-    /// <param name="request"></param>
-    /// <response code="200">Card is created successfully</response>
-    /// <response code="500">Unexpected server error</response>
-    /// <returns>True or False</returns>
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [HttpPost]
     public async Task<ActionResult<int>> CreateAsync([FromBody] CreateCardRequest request)
     {
@@ -69,17 +54,6 @@ public class CardController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Update a card
-    /// </summary>
-    /// <param name="id">Card ID</param>
-    /// <param name="request">Update request</param>
-    /// <param name="cancellationToken"></param>
-    /// <response code="200">Card is updated successfully</response>
-    /// <response code="404">Card id is not existed</response>
-    /// <response code="500">Unexpected server error</response>
-    /// <returns></returns>
-    [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateAsync([FromRoute] int id, [FromBody] UpdateCardRequest request, CancellationToken cancellationToken)
     {
@@ -99,16 +73,6 @@ public class CardController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Delete a card by card ID
-    /// </summary>
-    /// <param name="id">Card ID</param>
-    /// <param name="cancellationToken"></param>
-    /// <response code="200">Card is deleted successfully</response>
-    /// <response code="404">Card id is not existed</response>
-    /// <response code="500">Unexpected server error</response>
-    /// <returns></returns>
-    [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id, CancellationToken cancellationToken)
     {

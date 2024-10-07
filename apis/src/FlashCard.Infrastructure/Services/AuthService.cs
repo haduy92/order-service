@@ -36,19 +36,17 @@ public class AuthService : IAuthService
         {
             // If login was successful, get the user and their roles.
             var user = await _userManager.FindByNameAsync(request.Email);
-            var userId = user!.Id;
-            var userRoles = await _userManager.GetRolesAsync(user);
 
             // Sign out the user to clear any existing sessions.
             await _signInManager.SignOutAsync();
 
             // Generate a new token for the user.
-            var token = GenerateToken(userId, userRoles);
+            var token = GenerateToken(user!);
 
             return new()
             {
                 Succeeded = true,
-                UserId = userId,
+                UserId = user!.Id,
                 Token = token,
                 Expire = _jwtSettings.ExpirationTime
             };
@@ -76,18 +74,16 @@ public class AuthService : IAuthService
         {
             // If signup was successful, get the user and their roles.
             var createdUser = await _userManager.FindByNameAsync(user.UserName);
-            var userId = createdUser!.Id;
-            var userRoles = await _userManager.GetRolesAsync(createdUser);
 
             // Generate a new token for the user.
-            var token = GenerateToken(userId, userRoles);
+            var token = GenerateToken(createdUser!);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
             return new()
             {
                 Succeeded = true,
-                UserId = userId,
+                UserId = createdUser!.Id,
                 Token = token,
                 Expire = _jwtSettings.ExpirationTime
             };
@@ -119,14 +115,13 @@ public class AuthService : IAuthService
         return _mapper.Map<UserDto>(user);
     }
 
-    private string GenerateToken(string userId, IEnumerable<string>? roles = null)
+    private string GenerateToken(ApplicationUser user)
     {
-        return JwtHelper.GenerateEncodedToken(userId,
-            _jwtSettings.ExpirationTime,
+        return TokenHelper.CreateToken(user.Id, user.UserName ?? string.Empty,
             _jwtSettings.Issuer,
             _jwtSettings.Audience,
             _jwtSettings.Key,
-            roles);
+            _jwtSettings.ExpirationTime);
     }
 
     private IdentityResponse ErrorResponse(IDictionary<string, string>? errors = null)
