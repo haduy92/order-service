@@ -54,14 +54,14 @@ This is instruction to setup and run project in local machine.
   - Auth API: user signup, login, and logout
   - Card API: search with paging (Full-Text search in Postgres), create, read, update, and delete cards
   - AI enhancement: generate a few definition sentences for a vocabulary world.
-  - Global exception handler: allow only intended error details are sent to client 
+  - Global exception handler: allow only intended error details are sent to client
   - Authentication with JwtBearer
 * CI/CD: not implemented
 * Deployment: not implemented
 
 ## Limitations
 
-1. Using only jwt bearer token for api authentication causes a security hole when an user signout from webapp but another party is able to steal the token. Then that party can still call api using that token.
+1. Using only jwt bearer token for api authentication causes a security hole when an user signout from webapp but if another party is able to steal the token, then that party can still abuse api using that token.
    - Current solution: set token expiration time to 5 min
    - Better solution: store token along with user id in redis db when singin/singup and delete it when singout
 1. Can only generate text for a prompt
@@ -69,7 +69,7 @@ This is instruction to setup and run project in local machine.
 ## Future enhancements
 
 1. Better logging (trace id, correlation id)
-1. Apply EventSourcing/CQRS: allow users to send a list of vacabulary as a command, then send an event to a consummer to tell it to generate texts, images in the background
+1. Apply EventSourcing/CQRS: allow users to send a list of vocabulary as a command, then send an event to a consumer to tell it to generate texts, images in the background
 
 ## License
 
