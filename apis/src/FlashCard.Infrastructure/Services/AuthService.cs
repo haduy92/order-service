@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AutoMapper;
 using FlashCard.Application.Interfaces.Identity;
 using FlashCard.Application.Interfaces.Persistence.Identities;
@@ -41,7 +40,12 @@ public class AuthService : IAuthService
             var accessToken = _tokenService.GenerateAccessToken(user!.Id, request.Email);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
-            await _refreshTokenRepository.InsertAsync(new RefreshToken { Token = refreshToken.RefreshToken, Expires = refreshToken.Expires });
+            await _refreshTokenRepository.InsertAsync(new RefreshToken
+            {
+                Token = refreshToken.RefreshToken,
+                Expires = refreshToken.Expires,
+                CreatorUserId = user.Id
+            });
 
             return new()
             {
@@ -63,11 +67,6 @@ public class AuthService : IAuthService
             }
             return ErrorResponse("invalid_email_or_password");
         }
-    }
-
-    public async Task SignOutAsync()
-    {
-        await _signInManager.SignOutAsync();
     }
 
     public async Task<IdentityResponse> SignUpAsync(SignUpRequest request)
@@ -110,14 +109,42 @@ public class AuthService : IAuthService
         return ErrorResponse(result.Errors.Select(x => $"{x.Code}:{x.Description}"));
     }
 
-    public async Task<UserDto?> GetCurrentUserAsync(ClaimsPrincipal principal)
+    public async Task SignOutAsync(string userId)
     {
-        if (principal == null)
+        await _refreshTokenRepository.RevokeByUserIdAsync(userId);
+        await _signInManager.SignOutAsync();
+    }
+
+    public async Task<IdentityResponse> RefreshTokenAsync(string refreshToken)
+    {
+        var existing = await _refreshTokenRepository.GetAsync(refreshToken);
+        if (existing is null || !existing.IsActive)
         {
-            return null;
+            return ErrorResponse("invalid_refresh_token");
         }
 
-        var userId = _userManager.GetUserId(principal);
+        existing.Revoked = DateTime.UtcNow;
+        var user = await _userManager.FindByIdAsync(existing.CreatorUserId);
+        var accessToken = _tokenService.GenerateAccessToken(user!.Id, user.Email!);
+        var refreshTokenDto = _tokenService.GenerateRefreshToken();
+        await _refreshTokenRepository.InsertAsync(new RefreshToken
+        {
+            Token = refreshTokenDto.RefreshToken,
+            Expires = refreshTokenDto.Expires,
+            CreatorUserId = user.Id
+        });
+
+        return new()
+        {
+            Succeeded = true,
+            UserId = user!.Id,
+            AccessToken = accessToken,
+            RefreshToken = refreshTokenDto.RefreshToken
+        };
+    }
+
+    public async Task<UserDto?> GetProfileAsync(string userId)
+    {
         if (string.IsNullOrEmpty(userId))
         {
             return null;

@@ -21,11 +21,11 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         return entity;
     }
 
-    public async Task<RefreshToken?> GetAsync(string refreshToken, string userId)
+    public async Task<RefreshToken?> GetAsync(string refreshToken)
     {
         return await _dbContext.RefreshTokens
             .AsNoTracking()
-            .FirstOrDefaultAsync(rt => rt.Token == refreshToken && rt.CreatorUserId == userId);
+            .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
     }
 
     public async Task UpdateAsync(RefreshToken entity)
@@ -33,4 +33,19 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         _dbContext.RefreshTokens.Update(entity);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task RevokeByUserIdAsync(string userId)
+    {
+        var entities = await _dbContext.RefreshTokens
+            .Where(rt => rt.CreatorUserId == userId && rt.Revoked == null && rt.Expires < DateTime.UtcNow)
+            .ToListAsync();
+
+        if (entities?.Any() == true)
+        {
+            foreach (var entity in entities) entity.Revoked = DateTime.UtcNow;
+        }
+
+        await _dbContext.SaveChangesAsync();
+    }
+
 }

@@ -1,3 +1,4 @@
+using FlashCard.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,6 @@ public class AppIdentityDbContextFactory : IDesignTimeDbContextFactory<AppIdenti
         var optionsBuilder = new DbContextOptionsBuilder<AppIdentityDbContext>();
         optionsBuilder.UseNpgsql(connStr);
 
-        return new AppIdentityDbContext(optionsBuilder.Options);
+        return new AppIdentityDbContext(optionsBuilder.Options, NullCurrentUser.Instance);
     }
 }

@@ -29,62 +29,52 @@ public class AuthController : ControllerBase
     [HttpPost("signin")]
     public async Task<ActionResult<ResponseBase>> SignInAsync(SignInRequest request)
     {
-        try
-        {
-            // Authenticate user and generate authentication token
-            var response = await _authService.SignInAsync(request);
+        // Authenticate user and generate authentication token
+        var response = await _authService.SignInAsync(request);
 
-            if (!response.Succeeded)
-            {
-                return Unauthorized(response);
-            }
-
-            return Ok(response);
-        }
-        catch (Exception ex)
+        if (!response.Succeeded)
         {
-            return StatusCode(500, ex.Message);
+            return Unauthorized(response);
         }
+
+        return Ok(response);
     }
 
     [HttpPost("signup")]
     public async Task<ActionResult<ResponseBase>> SignUpAsync(SignUpRequest request)
     {
-        try
-        {
-            // Register new user
-            var response = await _authService.SignUpAsync(request);
+        // Register new user
+        var response = await _authService.SignUpAsync(request);
 
-            if (response == null || !response.Succeeded)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
-        }
-        catch (Exception ex)
+        if (response == null || !response.Succeeded)
         {
-            return StatusCode(500, ex.Message);
+            return BadRequest(response);
         }
+
+        return Ok(response);
+    }
+
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<ResponseBase>> RefreshTokenAsync(string refreshToken)
+    {
+        var response = await _authService.RefreshTokenAsync(refreshToken);
+        return Ok(response);
     }
 
     [HttpPost("signout")]
+    [Authorize]
     public async Task<ActionResult> SignOutAsync()
     {
         // Log out user
-        await _authService.SignOutAsync();
-
+        await _authService.SignOutAsync(_currentUser.UserId!);
         return NoContent();
     }
 
     [HttpGet("me")]
     [Authorize]
-    public ActionResult GetProfileAsync()
+    public async Task<ActionResult> GetProfileAsync()
     {
-        return Ok(new
-        {
-            _currentUser.UserId,
-            _currentUser.Username
-        });
+        var profile = await _authService.GetProfileAsync(_currentUser.UserId!);
+        return Ok(profile);
     }
 }
