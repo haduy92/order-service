@@ -2,5 +2,7 @@ namespace FlashCard.Application.Interfaces.Application;
 
 public interface ICurrentUser
 {
-    int UserId { get; }
+    string? UserId { get; }
+    string? Username { get; }
+    bool IsAuthenticated { get; }
 }

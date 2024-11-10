@@ -1,4 +1,6 @@
+using System.Text.Json.Serialization;
 using FlashCard.Api.Extensions;
+using FlashCard.Api.MIddlewares;
 using FlashCard.Application.Extensions;
 using FlashCard.Infrastructure.Data;
 using FlashCard.Infrastructure.Extensions;
@@ -6,7 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+   options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});;
 builder.Services.AddApiVersion();
 builder.Services.AddSwaggerGenWithAuth();
 builder.Services.AddApplication();
@@ -36,12 +41,13 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCurrentUser();
+
+app.UseMiddleware<CurrentUserMiddleware>();
 
 app.MapControllers();
 app.Run();
 
-// private methods
+// Private methods
 void MigrateDb()
 {
     using (var scope = app.Services.CreateAsyncScope())

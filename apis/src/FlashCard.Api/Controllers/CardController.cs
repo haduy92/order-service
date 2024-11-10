@@ -16,10 +16,10 @@ namespace FlashCard.Api.Controllers;
 public class CardController : ControllerBase
 {
     private readonly ICardService _cardService;
-    private readonly ILogger<AuthController> _logger;
+    private readonly ILogger<CardController> _logger;
 
     public CardController(ICardService cardService,
-        ILogger<AuthController> logger)
+        ILogger<CardController> logger)
     {
         _cardService = cardService;
         _logger = logger;

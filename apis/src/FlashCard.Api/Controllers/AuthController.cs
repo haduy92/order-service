@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using FlashCard.Application.Interfaces.Application;
 using FlashCard.Application.Interfaces.Identity;
 using FlashCard.Application.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,18 +10,20 @@ namespace FlashCard.Api.Controllers;
 [ApiExplorerSettings(GroupName = "auth")]
 [ApiVersion("1.0")]
 [ApiController]
-[AllowAnonymous]
 [Route("api/v{version:apiVersion}/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ICurrentUser _currentUser;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(IAuthService authService,
+        ICurrentUser currentUser,
         ILogger<AuthController> logger)
     {
         _logger = logger;
         _authService = authService;
+        _currentUser = currentUser;
     }
 
     [HttpPost("signin")]
@@ -33,7 +36,7 @@ public class AuthController : ControllerBase
 
             if (!response.Succeeded)
             {
-                return BadRequest(response);
+                return Unauthorized(response);
             }
 
             return Ok(response);
@@ -72,5 +75,16 @@ public class AuthController : ControllerBase
         await _authService.SignOutAsync();
 
         return NoContent();
+    }
+
+    [HttpGet("me")]
+    [Authorize]
+    public ActionResult GetProfileAsync()
+    {
+        return Ok(new
+        {
+            _currentUser.UserId,
+            _currentUser.Username
+        });
     }
 }

@@ -1,31 +1,33 @@
 using System.Security.Claims;
 using AutoMapper;
 using FlashCard.Application.Interfaces.Identity;
+using FlashCard.Application.Interfaces.Persistence.Identities;
 using FlashCard.Application.Models;
+using FlashCard.Domain.Entities;
 using FlashCard.Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
-using FlashCard.Infrastructure.Configurations;
-using Microsoft.Extensions.Options;
-using FlashCard.Infrastructure.Helpers;
 
 namespace FlashCard.Infrastructure.Services;
 
 public class AuthService : IAuthService
 {
+    private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IMapper _mapper;
-    private readonly JwtOptions _jwtOptions;
+    private readonly ITokenService _tokenService;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-    public AuthService(UserManager<ApplicationUser> userManager,
+    public AuthService(IMapper mapper,
+        UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        IMapper mapper,
-        IOptions<JwtOptions> jwtOptions)
+        ITokenService tokenService,
+        IRefreshTokenRepository refreshTokenRepository)
     {
+        _mapper = mapper;
         _userManager = userManager;
         _signInManager = signInManager;
-        _mapper = mapper;
-        _jwtOptions = jwtOptions.Value;
+        _tokenService = tokenService;
+        _refreshTokenRepository = refreshTokenRepository;
     }
 
     public async Task<IdentityResponse> SignInAsync(SignInRequest request)
@@ -36,23 +38,31 @@ public class AuthService : IAuthService
         {
             // If login was successful, get the user and their roles.
             var user = await _userManager.FindByNameAsync(request.Email);
+            var accessToken = _tokenService.GenerateAccessToken(user!.Id, request.Email);
+            var refreshToken = _tokenService.GenerateRefreshToken();
 
-            // Sign out the user to clear any existing sessions.
-            await _signInManager.SignOutAsync();
-
-            // Generate a new token for the user.
-            var token = GenerateToken(user!);
+            await _refreshTokenRepository.InsertAsync(new RefreshToken { Token = refreshToken.RefreshToken, Expires = refreshToken.Expires });
 
             return new()
             {
                 Succeeded = true,
                 UserId = user!.Id,
-                Token = token,
-                Expire = _jwtOptions.ExpirationTime
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.RefreshToken
             };
         }
-
-        return ErrorResponse();
+        else
+        {
+            if (result.IsLockedOut)
+            {
+                return ErrorResponse("account_locked_out");
+            }
+            if (result.IsNotAllowed)
+            {
+                return ErrorResponse("account_not_allowed");
+            }
+            return ErrorResponse("invalid_email_or_password");
+        }
     }
 
     public async Task SignOutAsync()
@@ -68,6 +78,12 @@ public class AuthService : IAuthService
             UserName = request.Email
         };
 
+        var existingUser = await _userManager.FindByNameAsync(request.Email);
+        if (existingUser != null)
+        {
+            return ErrorResponse("email_already_existed");
+        }
+
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (result.Succeeded)
@@ -75,21 +91,23 @@ public class AuthService : IAuthService
             // If signup was successful, get the user and their roles.
             var createdUser = await _userManager.FindByNameAsync(user.UserName);
 
-            // Generate a new token for the user.
-            var token = GenerateToken(createdUser!);
-
             await _signInManager.SignInAsync(user, isPersistent: false);
+
+            var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email!);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            await _refreshTokenRepository.InsertAsync(new RefreshToken { Token = refreshToken.RefreshToken, Expires = refreshToken.Expires });
 
             return new()
             {
                 Succeeded = true,
                 UserId = createdUser!.Id,
-                Token = token,
-                Expire = _jwtOptions.ExpirationTime
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.RefreshToken
             };
         }
 
-        return ErrorResponse(result.Errors.ToDictionary(x => x.Code, x => x.Description));
+        return ErrorResponse(result.Errors.Select(x => $"{x.Code}:{x.Description}"));
     }
 
     public async Task<UserDto?> GetCurrentUserAsync(ClaimsPrincipal principal)
@@ -115,24 +133,20 @@ public class AuthService : IAuthService
         return _mapper.Map<UserDto>(user);
     }
 
-    private string GenerateToken(ApplicationUser user)
-    {
-        return TokenHelper.CreateToken(user.Id, user.UserName ?? string.Empty,
-            _jwtOptions.Issuer,
-            _jwtOptions.Audience,
-            _jwtOptions.Key,
-            _jwtOptions.ExpirationTime);
-    }
-
-    private IdentityResponse ErrorResponse(IDictionary<string, string>? errors = null)
+    private IdentityResponse ErrorResponse(IEnumerable<string> errors)
     {
         return new()
         {
             Succeeded = false,
-            UserId = string.Empty,
-            Token = string.Empty,
-            Expire = DateTime.UtcNow,
             Errors = errors
+        };
+    }
+    private IdentityResponse ErrorResponse(string error)
+    {
+        return new()
+        {
+            Succeeded = false,
+            Errors = [error]
         };
     }
 }

@@ -2,6 +2,7 @@ using AutoMapper;
 using FlashCard.Application.Interfaces.Application;
 using FlashCard.Application.Interfaces.Identity;
 using FlashCard.Application.Interfaces.Persistence.Cards;
+using FlashCard.Application.Interfaces.Persistence.Identities;
 using FlashCard.Infrastructure.Configurations;
 using FlashCard.Infrastructure.Data;
 using FlashCard.Infrastructure.Mapper;
@@ -42,10 +43,12 @@ public static class ServiceCollectionExtensions
 
         // Add repositories
         services.AddScoped<ICardRepository, CardRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
         // Add services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICardService, CardService>();
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ITextGeneratingService, TextGeneratingService>();
 
         // Add mapper profile

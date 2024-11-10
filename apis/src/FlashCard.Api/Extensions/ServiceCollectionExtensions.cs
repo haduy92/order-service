@@ -1,7 +1,7 @@
 using System.Text;
 using Asp.Versioning;
 using FlashCard.Api.ExceptionHandlers;
-using FlashCard.Api.Services;
+using FlashCard.Api.Contexts;
 using FlashCard.Application.Interfaces.Application;
 using FlashCard.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,9 +14,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDIs(this IServiceCollection services)
     {
-        services.AddScoped<CurrentUser>();
-        services.AddScoped<ICurrentUserInitializer, CurrentUser>(x => x.GetRequiredService<CurrentUser>());
-        services.AddScoped<ICurrentUser, CurrentUser>(x => x.GetRequiredService<CurrentUser>());
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUser, CurrentUser>();
 
         return services;
     }
@@ -101,8 +100,9 @@ public static class ServiceCollectionExtensions
                     ValidAudience = jwtOptions.Audience,
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
                 };
             });
         services.AddAuthorization();
