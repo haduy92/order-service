@@ -35,7 +35,14 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Add exception handler middleware before response wrapper
+app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+// Add current user middleware to set the current user context
 app.UseMiddleware<CurrentUserMiddleware>();
+
+// Add response wrapper middleware before FastEndpoints
+app.UseMiddleware<ResponseWrapperMiddleware>();
 
 // Use FastEndpoints instead of MapControllers
 app.UseFastEndpoints(c =>

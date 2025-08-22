@@ -1,3 +1,7 @@
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Infrastructure")]
+
 namespace Domain.Entities;
 
 /// <summary>
@@ -22,9 +26,24 @@ public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey>
     /// </summary>
     public virtual TPrimaryKey Id { get; set; } = default!;
 
-    public required string CreatorUserId { get; set; }
-    public DateTime CreationTime { get; set; }
-    public string? LastModifierUserId { get; set; }
-    public DateTime? LastModificationTime { get; set; }
+    /// <summary>
+    /// User ID who created this entity. Can only be set by the Infrastructure layer.
+    /// </summary>
+    public string CreatorUserId { get; internal set; } = string.Empty;
+    
+    /// <summary>
+    /// Date and time when this entity was created. Can only be set by the Infrastructure layer.
+    /// </summary>
+    public DateTime CreationTime { get; internal set; }
+    
+    /// <summary>
+    /// User ID who last modified this entity. Can only be set by the Infrastructure layer.
+    /// </summary>
+    public string? LastModifierUserId { get; internal set; }
+    
+    /// <summary>
+    /// Date and time when this entity was last modified. Can only be set by the Infrastructure layer.
+    /// </summary>
+    public DateTime? LastModificationTime { get; internal set; }
 }
 

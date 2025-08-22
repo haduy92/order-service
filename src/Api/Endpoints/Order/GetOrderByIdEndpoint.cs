@@ -30,7 +30,10 @@ public class GetOrderByIdEndpoint(IMediator mediator) : Ep
                 OrderDate = DateTime.UtcNow,
                 TotalAmount = 100.00m,
                 Status = OrderStatus.Created,
-                ShippingAddress = "123 Main St, Anytown, USA",
+                Street = "123 Main St",
+                City = "Anytown",
+                Country = "USA",
+                PostCode = "12345",
                 OrderItems = new List<OrderItemDto>
                 {
                     new OrderItemDto

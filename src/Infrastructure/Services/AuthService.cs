@@ -4,6 +4,7 @@ using Application.Models.Auth;
 using Domain.Entities;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
+using Shared.Exceptions;
 
 namespace Infrastructure.Services;
 
@@ -26,15 +27,15 @@ public class AuthService : IAuthService
         _refreshTokenRepository = refreshTokenRepository;
     }
 
-    public async Task<IdentityResponse> SignInAsync(SignInRequest request)
+    public async Task<IdentityResponse> SignInAsync(string email, string password)
     {
-        var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
 
         if (result.Succeeded)
         {
             // If login was successful, get the user and their roles.
-            var user = await _userManager.FindByNameAsync(request.Email);
-            var accessToken = _tokenService.GenerateAccessToken(user!.Id, request.Email);
+            var user = await _userManager.FindByNameAsync(email);
+            var accessToken = _tokenService.GenerateAccessToken(user!.Id, email);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             await _refreshTokenRepository.InsertAsync(new RefreshToken
@@ -46,7 +47,6 @@ public class AuthService : IAuthService
 
             return new()
             {
-                Succeeded = true,
                 UserId = user!.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken.RefreshToken
@@ -56,31 +56,31 @@ public class AuthService : IAuthService
         {
             if (result.IsLockedOut)
             {
-                return ErrorResponse("account_locked_out");
+                throw new UnauthorizedException("Account is locked out");
             }
             if (result.IsNotAllowed)
             {
-                return ErrorResponse("account_not_allowed");
+                throw new UnauthorizedException("Account is not allowed");
             }
-            return ErrorResponse("invalid_email_or_password");
+            throw new UnauthorizedException("Invalid email or password");
         }
     }
 
-    public async Task<IdentityResponse> SignUpAsync(SignUpRequest request)
+    public async Task<IdentityResponse> SignUpAsync(string email, string password)
     {
         var user = new ApplicationUser
         {
-            Email = request.Email,
-            UserName = request.Email
+            Email = email,
+            UserName = email
         };
 
-        var existingUser = await _userManager.FindByNameAsync(request.Email);
+        var existingUser = await _userManager.FindByNameAsync(email);
         if (existingUser != null)
         {
-            return ErrorResponse("email_already_existed");
+            throw new DuplicatedException("Email already exists");
         }
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(user, password);
 
         if (result.Succeeded)
         {
@@ -96,14 +96,14 @@ public class AuthService : IAuthService
 
             return new()
             {
-                Succeeded = true,
                 UserId = createdUser!.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken.RefreshToken
             };
         }
 
-        return ErrorResponse(result.Errors.Select(x => $"{x.Code}:{x.Description}"));
+        var errors = string.Join(", ", result.Errors.Select(x => $"{x.Code}: {x.Description}"));
+        throw new InvalidOperationException($"Registration failed: {errors}");
     }
 
     public async Task SignOutAsync(string userId)
@@ -117,7 +117,7 @@ public class AuthService : IAuthService
         var existing = await _refreshTokenRepository.GetAsync(refreshToken);
         if (existing is null || !existing.IsActive)
         {
-            return ErrorResponse("invalid_refresh_token");
+            throw new UnauthorizedException("Invalid or expired refresh token");
         }
 
         existing.Revoked = DateTime.UtcNow;
@@ -133,7 +133,6 @@ public class AuthService : IAuthService
 
         return new()
         {
-            Succeeded = true,
             UserId = user!.Id,
             AccessToken = accessToken,
             RefreshToken = refreshTokenDto.RefreshToken
@@ -159,23 +158,6 @@ public class AuthService : IAuthService
             Id = user.Id,
             Email = user.Email,
             UserName = user.UserName
-        };
-    }
-
-    private IdentityResponse ErrorResponse(IEnumerable<string> errors)
-    {
-        return new()
-        {
-            Succeeded = false,
-            Errors = errors
-        };
-    }
-    private IdentityResponse ErrorResponse(string error)
-    {
-        return new()
-        {
-            Succeeded = false,
-            Errors = [error]
         };
     }
 }

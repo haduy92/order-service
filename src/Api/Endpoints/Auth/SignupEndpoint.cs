@@ -7,7 +7,7 @@ namespace Api.Endpoints.Auth;
 
 public class SignupEndpoint(IAuthService authService) : Ep
     .Req<SignupEndpoint.RequestDto>
-    .NoRes
+    .Res<IdentityResponse>
 {
     public override void Configure()
     {
@@ -15,7 +15,7 @@ public class SignupEndpoint(IAuthService authService) : Ep
         Group<AuthGroup>();
         AllowAnonymous();
         Description(bld => bld.WithName("Auth_Signup")
-            .Produces(statusCode: StatusCodes.Status200OK)
+            .Produces<IdentityResponse>(statusCode: StatusCodes.Status200OK)
             .Produces(statusCode: StatusCodes.Status400BadRequest)
             .Produces(statusCode: StatusCodes.Status409Conflict));
         Summary(s =>
@@ -30,42 +30,15 @@ public class SignupEndpoint(IAuthService authService) : Ep
         });
     }
 
-    public override async Task HandleAsync(RequestDto req, CancellationToken cancellationToken)
+    public override async Task<IdentityResponse> ExecuteAsync(RequestDto req, CancellationToken cancellationToken)
     {
-        var signUpRequest = req.ToSignUpRequest();
-        var result = await authService.SignUpAsync(signUpRequest);
-
-        if (result.Succeeded)
-        {
-            await Send.OkAsync(cancellationToken);
-        }
-        else
-        {
-            // Handle error cases
-            if (result.Errors?.Any(e => e.Contains("email_already_existed")) == true)
-            {
-                ThrowError("Email already exists", StatusCodes.Status409Conflict);
-            }
-            else
-            {
-                ThrowError(string.Join(", ", result.Errors ?? ["Registration failed"]), StatusCodes.Status400BadRequest);
-            }
-        }
+        return await authService.SignUpAsync(req.Email, req.Password);
     }
 
     public sealed record RequestDto
     {
         public required string Email { get; init; }
         public required string Password { get; init; }
-
-        public SignUpRequest ToSignUpRequest()
-        {
-            return new SignUpRequest
-            {
-                Email = Email,
-                Password = Password
-            };
-        }
     }
 
     public class RequestValidator : Validator<RequestDto>

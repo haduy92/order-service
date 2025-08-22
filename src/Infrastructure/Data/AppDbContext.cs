@@ -1,7 +1,7 @@
 using Application.Interfaces.Application;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Infrastructure.Repositories.Configurations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
 
@@ -20,7 +20,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         // Apply entity configurations
         modelBuilder.ApplyConfiguration(new OrderConfiguration());
         modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
@@ -40,16 +40,26 @@ public class AppDbContext : DbContext
 
     private void SetAuditProperties()
     {
+        var userId = _currentUser.UserId ?? "system"; // Use "system" as fallback if no user is authenticated
+
         foreach (var entry in ChangeTracker.Entries())
         {
-            switch (entry.State)
+            if (entry.Entity is Entity<int> entity)
             {
-                case EntityState.Added:
-                    // EntityAuditingHelper.SetCreationAuditProperties(entry, _currentUser.UserId!);
-                    break;
-                case EntityState.Modified:
-                    // EntityAuditingHelper.SetModificationAuditProperties(entry, _currentUser.UserId!);
-                    break;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entity.CreatorUserId = userId;
+                        entity.CreationTime = DateTime.UtcNow;
+                        break;
+                    case EntityState.Modified:
+                        entity.LastModifierUserId = userId;
+                        entity.LastModificationTime = DateTime.UtcNow;
+                        break;
+                    default:
+                        // No action needed for Deleted or Unchanged states
+                        break;
+                }
             }
         }
     }

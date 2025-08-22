@@ -1,8 +1,8 @@
-using MediatR;
 using Application.Interfaces.Persistence;
 using Application.Mappers;
-using Shared.Exceptions;
 using Application.Models.Order;
+using MediatR;
+using Shared.Exceptions;
 
 namespace Application.Queries;
 
@@ -27,7 +27,7 @@ public record GetOrderByIdQuery : IRequest<OrderDetailsDto>
                 throw new NotFoundException($"Order with ID {request.Id} not found.");
             }
 
-            return OrderDetailsDtoMapper.Map(order);
+            return OrderMapper.ToOrderDetailDto(order);
         }
     }
 }

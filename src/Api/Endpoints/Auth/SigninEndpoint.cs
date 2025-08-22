@@ -29,38 +29,30 @@ public class SigninEndpoint(IAuthService authService) : Ep
             };
             s.ResponseExamples[200] = new IdentityResponse
             {
-                Succeeded = true,
                 UserId = "12345",
                 AccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 RefreshToken = "refresh_token_example"
-            };
-            s.ResponseExamples[400] = new IdentityResponse
-            {
-                Succeeded = false,
-                Errors = new List<string> { "Invalid email or password format" }
             };
         });
     }
 
     public override async Task<IdentityResponse> ExecuteAsync(RequestDto req, CancellationToken cancellationToken)
     {
-        var signInRequest = req.ToSignInRequest();
-        return await authService.SignInAsync(signInRequest);
+        try
+        {
+            return await authService.SignInAsync(req.Email, req.Password);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            ThrowError(ex.Message, StatusCodes.Status401Unauthorized);
+            return null!; // This will never execute
+        }
     }
 
     public sealed record RequestDto
     {
         public required string Email { get; init; }
         public required string Password { get; init; }
-
-        public SignInRequest ToSignInRequest()
-        {
-            return new SignInRequest
-            {
-                Email = Email,
-                Password = Password
-            };
-        }
     }
 
     public class RequestValidator : Validator<RequestDto>

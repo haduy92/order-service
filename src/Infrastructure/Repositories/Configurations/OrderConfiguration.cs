@@ -27,8 +27,25 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasMaxLength(50)
             .IsRequired();
         
-        builder.Property(o => o.ShippingAddress)
-            .HasMaxLength(500);
+        // Configure Address value object
+        builder.OwnsOne(o => o.ShippingAddress, addressBuilder =>
+        {
+            addressBuilder.Property(a => a.Street)
+                .HasColumnName("ShippingStreet")
+                .HasMaxLength(200);
+            
+            addressBuilder.Property(a => a.City)
+                .HasColumnName("ShippingCity")
+                .HasMaxLength(100);
+            
+            addressBuilder.Property(a => a.Country)
+                .HasColumnName("ShippingCountry")
+                .HasMaxLength(100);
+            
+            addressBuilder.Property(a => a.PostCode)
+                .HasColumnName("ShippingPostCode")
+                .HasMaxLength(20);
+        });
         
         builder.Property(o => o.CreatorUserId)
             .HasMaxLength(450)

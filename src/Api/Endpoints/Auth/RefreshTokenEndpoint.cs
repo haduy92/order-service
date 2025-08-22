@@ -28,27 +28,24 @@ public class RefreshTokenEndpoint(IAuthService authService) : Ep
             };
             s.ResponseExamples[200] = new IdentityResponse
             {
-                Succeeded = true,
                 UserId = "12345",
                 AccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 RefreshToken = "new_refresh_token_example"
-            };
-            s.ResponseExamples[400] = new IdentityResponse
-            {
-                Succeeded = false,
-                Errors = new List<string> { "Invalid refresh token format" }
-            };
-            s.ResponseExamples[401] = new IdentityResponse
-            {
-                Succeeded = false,
-                Errors = new List<string> { "Refresh token has expired or is invalid" }
             };
         });
     }
 
     public override async Task<IdentityResponse> ExecuteAsync(RequestDto req, CancellationToken cancellationToken)
     {
-        return await authService.RefreshTokenAsync(req.RefreshToken);
+        try
+        {
+            return await authService.RefreshTokenAsync(req.RefreshToken);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            ThrowError(ex.Message, StatusCodes.Status401Unauthorized);
+            return null!; // This will never execute
+        }
     }
 
     public sealed record RequestDto

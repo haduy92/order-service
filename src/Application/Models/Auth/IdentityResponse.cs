@@ -1,6 +1,6 @@
 namespace Application.Models.Auth;
 
-public record IdentityResponse : ResponseBase
+public record IdentityResponse
 {
     public string? UserId { get; init; }
     public string? AccessToken { get; init; }
