@@ -2,16 +2,16 @@ using Shared.Domain;
 
 namespace Application.Models.Order;
 
-public record OrderDetailsDto
+public sealed record OrderDetailsDto
 {
-    public int Id { get; set; }
-    public DateTime OrderDate { get; set; }
-    public decimal TotalAmount { get; set; }
-    public OrderStatus Status { get; set; }
-    public string? Street { get; set; }
-    public string? City { get; set; }
-    public string? Country { get; set; }
-    public string? PostCode { get; set; }
-    public ICollection<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
+    public int Id { get; init; }
+    public DateTime OrderDate { get; init; }
+    public decimal TotalAmount { get; init; }
+    public OrderStatus Status { get; init; }
+    public string? Street { get; init; }
+    public string? City { get; init; }
+    public string? Country { get; init; }
+    public string? PostCode { get; init; }
+    public ICollection<OrderItemDto> OrderItems { get; init; } = new List<OrderItemDto>();
 }
 

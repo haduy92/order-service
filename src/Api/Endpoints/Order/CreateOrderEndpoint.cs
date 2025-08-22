@@ -22,30 +22,33 @@ public class CreateOrderEndpoint(IMediator mediator) : Ep
             s.Description = "An async endpoint to create a new order with order items.";
             s.ExampleRequest = new RequestDto
             {
-                TotalAmount = 1326.00m,
-                Street = "123 Main St",
-                City = "Anytown",
-                Country = "USA",
-                PostCode = "12345",
-                OrderItems = new List<OrderItemDto>
+                OrderDetails = new()
                 {
-                    new OrderItemDto
+                    TotalAmount = 1326.00m,
+                    Street = "123 Main St",
+                    City = "Anytown",
+                    Country = "USA",
+                    PostCode = "12345",
+                    OrderItems = new List<OrderItemDto>
                     {
-                        ProductName = "Laptop Pro",
-                        Quantity = 1,
-                        Price = 1200.00m
-                    },
-                    new OrderItemDto
-                    {
-                        ProductName = "Wireless Mouse",
-                        Quantity = 2,
-                        Price = 25.50m
-                    },
-                    new OrderItemDto
-                    {
-                        ProductName = "Mechanical Keyboard",
-                        Quantity = 1,
-                        Price = 75.00m
+                        new OrderItemDto
+                        {
+                            ProductName = "Laptop Pro",
+                            Quantity = 1,
+                            Price = 1200.00m
+                        },
+                        new OrderItemDto
+                        {
+                            ProductName = "Wireless Mouse",
+                            Quantity = 2,
+                            Price = 25.50m
+                        },
+                        new OrderItemDto
+                        {
+                            ProductName = "Mechanical Keyboard",
+                            Quantity = 1,
+                            Price = 75.00m
+                        }
                     }
                 }
             };
@@ -63,29 +66,15 @@ public class CreateOrderEndpoint(IMediator mediator) : Ep
         return new ResponseDto { OrderId = orderId };
     }
 
-    public sealed record RequestDto : OrderDetailsDto
+    public sealed record RequestDto
     {
+        public required OrderDetailsDto OrderDetails { get; init; }
+
         public CreateOrderCommand ToCommand()
         {
-            var orderDetails = new OrderDetailsDto
+            return new()
             {
-                TotalAmount = TotalAmount,
-                Street = Street,
-                City = City,
-                Country = Country,
-                PostCode = PostCode,
-                OrderItems = OrderItems.Select(item => new OrderItemDto
-                {
-                    ProductName = item.ProductName,
-                    Quantity = item.Quantity,
-                    Price = item.Price,
-                    Total = item.Quantity * item.Price
-                }).ToList()
-            };
-
-            return new CreateOrderCommand
-            {
-                OrderDetails = orderDetails
+                OrderDetails = OrderDetails
             };
         }
     }
