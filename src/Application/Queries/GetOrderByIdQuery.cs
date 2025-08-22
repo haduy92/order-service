@@ -1,8 +1,8 @@
 using MediatR;
 using Application.Interfaces.Persistence;
 using Application.Mappers;
-using Application.Models;
 using Shared.Exceptions;
+using Application.Models.Order;
 
 namespace Application.Queries;
 

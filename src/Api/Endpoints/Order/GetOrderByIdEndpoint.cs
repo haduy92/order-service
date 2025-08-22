@@ -1,10 +1,10 @@
 using FastEndpoints;
 using MediatR;
-using Application.Models;
 using Application.Queries;
 using Shared.Domain;
+using Application.Models.Order;
 
-namespace Api.Endpoints;
+namespace Api.Endpoints.Order;
 
 public class GetOrderByIdEndpoint(IMediator mediator) : Ep
     .Req<GetOrderByIdEndpoint.RequestDto>

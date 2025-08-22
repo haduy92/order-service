@@ -5,9 +5,9 @@ using Application.Interfaces.Application;
 using Application.Interfaces.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Infrastructure.Repositories;
 using Infrastructure.Configurations;
+using FastEndpoints.Swagger;
 
 namespace Api.Extensions;
 
@@ -25,47 +25,31 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddSwaggerGenWithAuth(this IServiceCollection services)
     {
-        // Add services to the container.
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
+        // Configure main API document
+        services.SwaggerDocument(o =>
         {
-            options.SwaggerDoc("auth", new OpenApiInfo
+            o.DocumentSettings = s =>
             {
-                Title = "Auth",
-                Version = "v1",
-                Description = "An collection of API to manage user's authentication",
-            });
-            options.SwaggerDoc("card", new OpenApiInfo
+                s.DocumentName = "v1";
+                s.Title = "Order Service API";
+                s.Version = "v1.0";
+                s.Description = "A comprehensive API for managing orders and authentication";
+            };
+            
+            o.EnableJWTBearerAuth = true;
+            
+            // Exclude endpoints that don't belong to this document
+            o.ExcludeNonFastEndpoints = true;
+            
+            // Disable automatic tag generation to prevent duplicates
+            o.AutoTagPathSegmentIndex = 0;
+            
+            // Configure JWT security scheme
+            o.EndpointFilter = (endpointDefinition) =>
             {
-                Title = "Card",
-                Version = "v1",
-                Description = "An collection of API to manage cards",
-            });
-
-            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
-            {
-                Name = "JWT Authentication",
-                Description = "Enter a JWT token",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                BearerFormat = "JWT"
-            });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = JwtBearerDefaults.AuthenticationScheme
-                        },
-                    },
-                    Array.Empty<string>()
-                }
-            });
+                // Include all FastEndpoints
+                return true;
+            };
         });
 
         return services;
@@ -102,20 +86,14 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApiVersion(this IServiceCollection services)
     {
+        // Minimal API versioning for future extensibility
         services.AddApiVersioning(options =>
         {
             options.DefaultApiVersion = new ApiVersion(1, 0);
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
-            options.ApiVersionReader = ApiVersionReader.Combine(
-                new UrlSegmentApiVersionReader(),
-                new HeaderApiVersionReader("X-Api-Version")
-            );
-        })
-        .AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
+            // Use only header-based versioning to avoid URL conflicts
+            options.ApiVersionReader = new HeaderApiVersionReader("X-Api-Version");
         });
 
         return services;

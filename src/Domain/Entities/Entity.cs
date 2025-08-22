@@ -22,7 +22,7 @@ public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey>
     /// </summary>
     public virtual TPrimaryKey Id { get; set; } = default!;
 
-    public string? CreatorUserId { get; set; }
+    public required string CreatorUserId { get; set; }
     public DateTime CreationTime { get; set; }
     public string? LastModifierUserId { get; set; }
     public DateTime? LastModificationTime { get; set; }

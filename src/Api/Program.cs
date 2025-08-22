@@ -5,31 +5,27 @@ using Application.Extensions;
 using Infrastructure.Data;
 using Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
+using FastEndpoints;
+using FastEndpoints.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-   options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-});;
+// Add FastEndpoints
+builder.Services.AddFastEndpoints();
+
 builder.Services.AddApiVersion();
 builder.Services.AddSwaggerGenWithAuth();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAuthServices(builder.Configuration);
 builder.Services.AddDIs();
+
 var app = builder.Build();
 
-app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/auth/swagger.json", "auth");
-        options.SwaggerEndpoint("/swagger/card/swagger.json", "card");
-    });
+    app.UseSwaggerGen(); // Use FastEndpoints Swagger
 }
 
 MigrateDb();
@@ -41,7 +37,13 @@ app.UseAuthorization();
 
 app.UseMiddleware<CurrentUserMiddleware>();
 
-app.MapControllers();
+// Use FastEndpoints instead of MapControllers
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
+
 app.Run();
 
 // Private methods

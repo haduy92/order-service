@@ -1,4 +1,4 @@
-using Application.Models;
+using Application.Models.Order;
 using Domain.Entities;
 using Riok.Mapperly.Abstractions;
 

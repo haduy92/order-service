@@ -1,7 +1,6 @@
-using AutoMapper;
 using Application.Interfaces.Identity;
 using Application.Interfaces.Persistence.Identities;
-using Application.Models;
+using Application.Models.Auth;
 using Domain.Entities;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
@@ -10,19 +9,17 @@ namespace Infrastructure.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IMapper _mapper;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ITokenService _tokenService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-    public AuthService(IMapper mapper,
+    public AuthService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ITokenService tokenService,
         IRefreshTokenRepository refreshTokenRepository)
     {
-        _mapper = mapper;
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
@@ -95,7 +92,7 @@ public class AuthService : IAuthService
             var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email!);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
-            await _refreshTokenRepository.InsertAsync(new RefreshToken { Token = refreshToken.RefreshToken, Expires = refreshToken.Expires });
+            await _refreshTokenRepository.InsertAsync(new RefreshToken { Token = refreshToken.RefreshToken, Expires = refreshToken.Expires, CreatorUserId = user.UserName });
 
             return new()
             {
@@ -157,7 +154,12 @@ public class AuthService : IAuthService
             return null;
         }
 
-        return _mapper.Map<UserDto>(user);
+        return new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName
+        };
     }
 
     private IdentityResponse ErrorResponse(IEnumerable<string> errors)

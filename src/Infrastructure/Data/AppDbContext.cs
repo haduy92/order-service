@@ -1,6 +1,7 @@
 using Application.Interfaces.Application;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Repositories.Configurations;
 
 namespace Infrastructure.Data;
 
@@ -14,6 +15,16 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        // Apply entity configurations
+        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+    }
 
     public override int SaveChanges()
     {
