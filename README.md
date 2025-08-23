@@ -1,27 +1,27 @@
-# ?? Order Service
+# 🛍️ Order Service
 
 A modern, scalable order management service built with .NET 8 and clean architecture principles.
 
-## ?? Overview
+## 📝 Overview
 
 This application provides a comprehensive platform for managing e-commerce orders throughout their lifecycle. The system is designed to support distributed order processing workflows with real-time event handling and asynchronous processing capabilities.
 
-## ??? Architecture
+## 🏗️ Architecture
 
 The solution follows **Onion Architecture** (Clean Architecture) principles, ensuring loose coupling, high testability, and maintainability.
 
 ### Architecture Layers
 
 ```
-???????????????????????????????????????
-?            Presentation             ?  ? API Layer (FastEndpoints)
-???????????????????????????????????????
-?            Application              ?  ? Use Cases, Commands, Queries
-???????????????????????????????????????
-?            Infrastructure           ?  ? Data Access, External Services
-???????????????????????????????????????
-?              Domain                 ?  ? Business Logic, Entities
-???????????????????????????????????????
+┌─────────────────────────────────────┐
+│            Presentation             │  → API Layer (FastEndpoints)
+├─────────────────────────────────────┤
+│            Application              │  → Use Cases, Commands, Queries
+├─────────────────────────────────────┤
+│            Infrastructure           │  → Data Access, External Services
+├─────────────────────────────────────┤
+│              Domain                 │  → Business Logic, Entities
+└─────────────────────────────────────┘
 ```
 
 - **Domain Layer**: Core business entities (Orders, OrderItems) and rules (zero dependencies)
@@ -29,7 +29,7 @@ The solution follows **Onion Architecture** (Clean Architecture) principles, ens
 - **Infrastructure Layer**: Database access, external services, messaging
 - **Presentation Layer**: REST API endpoints for order management
 
-## ??? Technologies & Frameworks
+## 🛠️ Technologies & Frameworks
 
 ### Core Framework
 - **.NET 8.0** - Latest LTS version
@@ -67,23 +67,23 @@ The solution follows **Onion Architecture** (Clean Architecture) principles, ens
 - **Riok.Mapperly** - Source generator-based mapping
 - **Custom validation** - Business rule validation
 
-## ?? Project Structure
+## 📂 Project Structure
 
 ```
 src/
-??? Api/                    # Web API layer (FastEndpoints)
-??? Application/            # Application services, CQRS handlers
-??? Consumer/               # Background service for order processing
-??? Domain/                 # Core business logic and entities
-??? Infrastructure/         # Data access and external services
-??? Shared/                 # Common utilities and cross-cutting concerns
+├── Api/                    # Web API layer (FastEndpoints)
+├── Application/            # Application services, CQRS handlers
+├── Consumer/               # Background service for order processing
+├── Domain/                 # Core business logic and entities
+├── Infrastructure/         # Data access and external services
+└── Shared/                 # Common utilities and cross-cutting concerns
 
 tests/
-??? Application.Tests/      # Unit tests for application layer
-??? Infrastructure.Tests/   # Unit tests for infrastructure layer
+├── Application.Tests/      # Unit tests for application layer
+└── Infrastructure.Tests/   # Unit tests for infrastructure layer
 ```
 
-## ?? Component Workflow
+## 🔄 Component Workflow
 
 ### Order Processing Flow
 1. **API Layer** receives order requests via FastEndpoints
@@ -100,7 +100,7 @@ tests/
 - **Background consumers** handle long-running order operations
 - **State machines** manage complex order workflows (using Stateless library)
 
-## ? Key Features
+## ✨ Key Features
 
 ### Order Management
 - **Order Creation** with items and shipping details
@@ -117,7 +117,7 @@ tests/
 - **Secure Authentication**: JWT-based security
 - **API Documentation**: Swagger/OpenAPI integration
 
-## ?? Design Patterns
+## 🎨 Design Patterns
 
 - **CQRS (Command Query Responsibility Segregation)**
 - **Repository Pattern** - Data access abstraction
@@ -126,7 +126,7 @@ tests/
 - **Dependency Injection** - Loose coupling
 - **State Machine** - Order workflow management
 
-## ?? Domain Models
+## 📦 Domain Models
 
 ### Core Entities
 - **Order**: Main aggregate containing order details, status, and shipping information
@@ -140,7 +140,7 @@ tests/
 - `Cancelled` - Order cancelled by user or system
 - `Error` - Order encountered processing errors
 
-## ?? Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 - .NET 8.0 SDK
@@ -167,7 +167,7 @@ dotnet run --project src/Consumer
 dotnet test
 ```
 
-## ?? Development Guidelines
+## 📜 Development Guidelines
 
 This project follows strict coding standards and architectural principles:
 
@@ -179,7 +179,7 @@ This project follows strict coding standards and architectural principles:
 
 For detailed development guidelines, see `.github/copilot-instructions.md`.
 
-## ?? API Documentation
+## 📚 API Documentation
 
 API documentation is available via Swagger UI when running the application in development mode.
 
@@ -191,4 +191,4 @@ API documentation is available via Swagger UI when running the application in de
 
 ---
 
-*This application demonstrates modern .NET development practices for e-commerce order management with clean architecture, comprehensive testing, and enterprise-grade patterns.* ??
+*This application demonstrates modern .NET development practices for e-commerce order management with clean architecture, comprehensive testing, and enterprise-grade patterns.*
