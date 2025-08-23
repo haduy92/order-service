@@ -1,3 +1,6 @@
+Of course. Here is the raw Markdown text from the document for you to copy.
+
+````markdown
 # Copilot Instructions
 
 This document outlines the architectural principles, coding standards, and conventions to be followed in this solution. As an AI assistant, you must adhere to these guidelines when generating or modifying code to ensure consistency, maintainability, and quality.
@@ -69,7 +72,6 @@ Adhere strictly to the SOLID principles in all code.
 * **Methods & Properties:** `PascalCase` (e.g., `GetUserById`, `IsActive`)
 * **Variables & Parameters:** `camelCase` (e.g., `userId`, `cancellationToken`)
 * **Constants:** `PascalCase` (e.g., `DefaultTimeoutInSeconds`)
-* **Unit Test Methods:** Use descriptive names indicating the scenario and expected outcome (e.g., `GetUserById_ShouldReturnUser_WhenUserExists`)
 
 ### Code Style
 
@@ -79,6 +81,25 @@ Adhere strictly to the SOLID principles in all code.
 * **Usings:** Place `using` statements outside the namespace and remove unused usings.
 * **File-Scoped Namespaces:** Use file-scoped namespaces to reduce nesting (e.g., `namespace MySolution.Services;`).
 
+### Unit Testing
+
+* **Framework:** Use **xUnit** as the testing framework.
+* **Mocking:** Use **Moq** for creating mocks and stubs of dependencies.
+* **Data Generation:** Use **AutoFixture** to generate sample data and reduce test setup boilerplate.
+* **Naming Convention:** Test methods must follow the `When_{method_name}_Given_{context}_Then_{expectation}` pattern.
+    * **Example:** `public void When_CreateOrder_Given_ValidRequest_Then_ReturnOk()`
+* **Test Structure:** The body of each test method must follow the **Arrange-Act-Assert** pattern, with each section clearly marked by a comment.
+    ```csharp
+    // Arrange
+    ...
+
+    // Act
+    ...
+
+    // Assert
+    ...
+    ```
+
 ## Copilot Usage
 
 * **Adhere to all standards** outlined in this document when generating or modifying code.
@@ -86,3 +107,4 @@ Adhere strictly to the SOLID principles in all code.
 * **Prefer existing patterns** and conventions found in the current solution.
 * **Generate code that is ready to use** and fits seamlessly into the existing structure.
 * **Document any necessary deviations** from these standards in pull requests or code reviews.
+````

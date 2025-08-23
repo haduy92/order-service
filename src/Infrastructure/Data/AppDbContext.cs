@@ -2,6 +2,7 @@ using Application.Contracts.Application;
 using Domain.Entities;
 using Infrastructure.Repositories.Configurations;
 using Microsoft.EntityFrameworkCore;
+using Shared.Extensions;
 
 namespace Infrastructure.Data;
 
@@ -40,7 +41,7 @@ public class AppDbContext : DbContext
 
     private void SetAuditProperties()
     {
-        var userId = _currentUser.UserId ?? "system"; // Use "system" as fallback if no user is authenticated
+        var userId = _currentUser.UserId.IsNullOrWhiteSpace() ? "system" : _currentUser.UserId;
 
         foreach (var entry in ChangeTracker.Entries())
         {

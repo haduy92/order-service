@@ -64,14 +64,33 @@ internal static class ServiceCollectionExtensions
 
     public static IServiceCollection AddExternalApiServices(this IServiceCollection services, ConfigurationManager configuration)
     {
-        // Register HTTP client for external API calls
+        // Register system authentication services
+        services.AddScoped<ISystemTokenService, SystemTokenService>();
+        
+        // Register HTTP delegating handlers
+        services.AddTransient<AuthenticationDelegatingHandler>();
+        services.AddTransient<ApiErrorHandlingDelegatingHandler>();
+        
+        // Register HTTP client for system token authentication (separate from main API client)
+        services.AddHttpClient<ISystemTokenService, SystemTokenService>((serviceProvider, client) =>
+        {
+            var orderApiOptions = configuration.GetSection(OrderApiOptions.SectionName).Get<OrderApiOptions>();
+            client.BaseAddress = new Uri(orderApiOptions?.BaseUrl ?? "http://localhost:5000");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.Timeout = TimeSpan.FromSeconds(30);
+        })
+        .AddHttpMessageHandler<ApiErrorHandlingDelegatingHandler>(); // Add error handling
+        
+        // Register HTTP client for external API calls with authentication and error handling
         services.AddHttpClient<IOrderApiService, OrderApiService>((serviceProvider, client) =>
         {
             var orderApiOptions = configuration.GetSection(OrderApiOptions.SectionName).Get<OrderApiOptions>();
             client.BaseAddress = new Uri(orderApiOptions?.BaseUrl ?? "http://localhost:5000");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.Timeout = TimeSpan.FromSeconds(30);
-        });
+        })
+        .AddHttpMessageHandler<AuthenticationDelegatingHandler>() // Add authentication first
+        .AddHttpMessageHandler<ApiErrorHandlingDelegatingHandler>(); // Add error handling last
         
         return services;
     }

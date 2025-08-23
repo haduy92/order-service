@@ -73,7 +73,7 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        if (string.IsNullOrEmpty(str) || maxLength == 0)
+        if (str.IsNullOrEmpty() || maxLength == 0)
         {
             return string.Empty;
         }

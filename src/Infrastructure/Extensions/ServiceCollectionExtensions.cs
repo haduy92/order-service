@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<ITextGeneratingService, TextGeneratingService>();
+        services.AddScoped<ISystemUserSeedingService, SystemUserSeedingService>();
         
         // Add messaging
         services.AddSingleton<IMessagePublisher, RabbitMqMessagePublisher>();

@@ -5,6 +5,7 @@ using Domain.Entities;
 using Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Shared.Exceptions;
+using Shared.Extensions;
 
 namespace Infrastructure.Services;
 
@@ -141,7 +142,7 @@ public class AuthService : IAuthService
 
     public async Task<UserDto?> GetProfileAsync(string userId)
     {
-        if (string.IsNullOrEmpty(userId))
+        if (userId.IsNullOrEmpty())
         {
             return null;
         }

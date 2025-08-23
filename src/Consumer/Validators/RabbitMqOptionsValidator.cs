@@ -1,5 +1,6 @@
 using Consumer.Configuration;
 using Microsoft.Extensions.Options;
+using Shared.Extensions;
 
 namespace Consumer.Validators;
 
@@ -13,7 +14,7 @@ public class RabbitMqOptionsValidator : IValidateOptions<RabbitMqOptions>
     {
         var failures = new List<string>();
 
-        if (string.IsNullOrWhiteSpace(options.HostName))
+        if (options.HostName.IsNullOrWhiteSpace())
         {
             failures.Add("RabbitMQ HostName is required and cannot be empty");
         }
@@ -23,22 +24,22 @@ public class RabbitMqOptionsValidator : IValidateOptions<RabbitMqOptions>
             failures.Add("RabbitMQ Port must be between 1 and 65535");
         }
 
-        if (string.IsNullOrWhiteSpace(options.UserName))
+        if (options.UserName.IsNullOrWhiteSpace())
         {
             failures.Add("RabbitMQ UserName is required and cannot be empty");
         }
 
-        if (string.IsNullOrWhiteSpace(options.Password))
+        if (options.Password.IsNullOrWhiteSpace())
         {
             failures.Add("RabbitMQ Password is required and cannot be empty");
         }
 
-        if (string.IsNullOrWhiteSpace(options.Exchange))
+        if (options.Exchange.IsNullOrWhiteSpace())
         {
             failures.Add("RabbitMQ Exchange name is required and cannot be empty");
         }
 
-        if (string.IsNullOrWhiteSpace(options.ExchangeType))
+        if (options.ExchangeType.IsNullOrWhiteSpace())
         {
             failures.Add("RabbitMQ ExchangeType is required and cannot be empty");
         }

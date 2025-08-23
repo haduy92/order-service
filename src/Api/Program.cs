@@ -28,7 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerGen(); // Use FastEndpoints Swagger
 }
 
-MigrateDb();
+// Initialize database with seeding
+await app.SeedDatabaseAsync();
 
 app.UseHttpsRedirection();
 
@@ -52,18 +53,4 @@ app.UseFastEndpoints(c =>
 });
 
 app.Run();
-
-// Private methods
-void MigrateDb()
-{
-    using (var scope = app.Services.CreateAsyncScope())
-    {
-        var identityDbContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
-        if (identityDbContext.Database.EnsureCreated()) // If new database is created
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Database.Migrate();
-        }
-    }
-}
 

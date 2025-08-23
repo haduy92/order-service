@@ -13,6 +13,11 @@ public interface IOrderApiService
     Task<OrderDetailsDto?> GetOrderAsync(int orderId);
 }
 
+/// <summary>
+/// Service for interacting with the Order API
+/// Uses EnsureSuccessStatusCode() for automatic error handling via delegating handlers
+/// Follows the Single Responsibility Principle by focusing only on API communication logic
+/// </summary>
 public class OrderApiService : IOrderApiService
 {
     private readonly HttpClient _httpClient;
@@ -32,22 +37,26 @@ public class OrderApiService : IOrderApiService
             var json = JsonConvert.SerializeObject(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PutAsync($"/api/orders/{orderId}/status", content);
+            var response = await _httpClient.PutAsync($"/api/v1/orders/{orderId}/status", content);
             
-            if (response.IsSuccessStatusCode)
-            {
-                _logger.LogInformation("Successfully updated order {OrderId} status to {Status}", orderId, newStatus);
-                return true;
-            }
-            else
-            {
-                _logger.LogWarning("Failed to update order {OrderId} status. Response: {StatusCode}", orderId, response.StatusCode);
-                return false;
-            }
+            // Use EnsureSuccessStatusCode - error handling is done by the delegating handler
+            response.EnsureSuccessStatusCode();
+            
+            _logger.LogInformation("Successfully updated order {OrderId} status to {Status}", orderId, newStatus);
+            return true;
+        }
+        catch (HttpRequestException ex)
+        {
+            // HTTP errors are already logged by the delegating handler
+            // Just log the business context and return false
+            _logger.LogWarning("Order status update failed for order {OrderId} to status {Status}: {Message}", 
+                orderId, newStatus, ex.Message);
+            return false;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error updating order {OrderId} status to {Status}", orderId, newStatus);
+            // Handle non-HTTP exceptions (network issues, serialization errors, etc.)
+            _logger.LogError(ex, "Unexpected error updating order {OrderId} status to {Status}", orderId, newStatus);
             return false;
         }
     }
@@ -56,52 +65,55 @@ public class OrderApiService : IOrderApiService
     {
         try
         {
-            var response = await _httpClient.GetAsync($"/api/orders/{orderId}");
+            var response = await _httpClient.GetAsync($"/api/v1/orders/{orderId}");
             
-            if (response.IsSuccessStatusCode)
+            // Use EnsureSuccessStatusCode - error handling is done by the delegating handler
+            response.EnsureSuccessStatusCode();
+            
+            var json = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("Received response for order {OrderId}: {Response}", orderId, json);
+            
+            // Try to deserialize as wrapped response first
+            try
             {
-                var json = await response.Content.ReadAsStringAsync();
-                _logger.LogDebug("Received response for order {OrderId}: {Response}", orderId, json);
-                
-                // Try to deserialize as wrapped response first
-                try
+                var wrappedResponse = JsonConvert.DeserializeObject<SuccessResponse<OrderDetailsDto>>(json);
+                if (wrappedResponse?.Succeeded == true && wrappedResponse.Data != null)
                 {
-                    var wrappedResponse = JsonConvert.DeserializeObject<SuccessResponse<OrderDetailsDto>>(json);
-                    if (wrappedResponse?.Succeeded == true && wrappedResponse.Data != null)
-                    {
-                        _logger.LogInformation("Successfully retrieved order {OrderId} from API", orderId);
-                        return wrappedResponse.Data;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("API returned unsuccessful response for order {OrderId}: {Errors}", 
-                            orderId, wrappedResponse?.Errors != null ? string.Join(", ", wrappedResponse.Errors) : "Unknown error");
-                        return null;
-                    }
+                    _logger.LogInformation("Successfully retrieved order {OrderId} from API", orderId);
+                    return wrappedResponse.Data;
                 }
-                catch (JsonException)
+                else
                 {
-                    // Fallback: try to deserialize as direct OrderDetailsDto (in case response isn't wrapped)
-                    var orderDetails = JsonConvert.DeserializeObject<OrderDetailsDto>(json);
-                    if (orderDetails != null)
-                    {
-                        _logger.LogInformation("Successfully retrieved order {OrderId} from API (direct response)", orderId);
-                        return orderDetails;
-                    }
+                    _logger.LogWarning("API returned unsuccessful response for order {OrderId}: {Errors}", 
+                        orderId, wrappedResponse?.Errors != null ? string.Join(", ", wrappedResponse.Errors) : "Unknown error");
+                    return null;
                 }
-                
-                _logger.LogWarning("Failed to deserialize order response for {OrderId}", orderId);
-                return null;
             }
-            else
+            catch (JsonException)
             {
-                _logger.LogWarning("Failed to get order {OrderId}. Response: {StatusCode}", orderId, response.StatusCode);
-                return null;
+                // Fallback: try to deserialize as direct OrderDetailsDto (in case response isn't wrapped)
+                var orderDetails = JsonConvert.DeserializeObject<OrderDetailsDto>(json);
+                if (orderDetails != null)
+                {
+                    _logger.LogInformation("Successfully retrieved order {OrderId} from API (direct response)", orderId);
+                    return orderDetails;
+                }
             }
+            
+            _logger.LogWarning("Failed to deserialize order response for {OrderId}", orderId);
+            return null;
+        }
+        catch (HttpRequestException ex)
+        {
+            // HTTP errors are already logged by the delegating handler
+            // Just log the business context and return null
+            _logger.LogWarning("Order retrieval failed for order {OrderId}: {Message}", orderId, ex.Message);
+            return null;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting order {OrderId}", orderId);
+            // Handle non-HTTP exceptions (network issues, serialization errors, etc.)
+            _logger.LogError(ex, "Unexpected error getting order {OrderId}", orderId);
             return null;
         }
     }
