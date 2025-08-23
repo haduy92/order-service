@@ -1,4 +1,4 @@
-namespace Application.Interfaces.Application;
+namespace Application.Contracts.Application;
 
 public interface ICurrentUser
 {

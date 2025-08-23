@@ -1,5 +1,5 @@
-using Application.Interfaces.Identity;
-using Application.Interfaces.Persistence.Identities;
+using Application.Contracts.Identity;
+using Application.Contracts.Persistence.Identities;
 using Application.Models.Auth;
 using Domain.Entities;
 using Infrastructure.Models;

@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Interfaces.Persistence;
+namespace Application.Contracts.Persistence;
 
 public interface IOrderItemRepository : IRepository<OrderItem, int>
 {

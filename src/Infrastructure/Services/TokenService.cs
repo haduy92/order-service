@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Application.Interfaces.Identity;
+using Application.Contracts.Identity;
 using Application.Models.Auth;
 using Infrastructure.Configurations;
 using Microsoft.Extensions.Options;

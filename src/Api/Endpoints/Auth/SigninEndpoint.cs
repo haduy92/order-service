@@ -1,6 +1,6 @@
 using FastEndpoints;
 using FluentValidation;
-using Application.Interfaces.Identity;
+using Application.Contracts.Identity;
 using Application.Models.Auth;
 
 namespace Api.Endpoints.Auth;

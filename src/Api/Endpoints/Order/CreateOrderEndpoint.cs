@@ -14,7 +14,7 @@ public class CreateOrderEndpoint(IMediator mediator) : Ep
         Post("");
         Group<OrderGroup>();
         Description(bld => bld.WithName("Orders_CreateOrder")
-            .Produces<ResponseDto>(statusCode: StatusCodes.Status201Created)
+            .Produces<ResponseDto>(statusCode: StatusCodes.Status200OK)
             .ProducesProblem(statusCode: StatusCodes.Status400BadRequest));
         Summary(s =>
         {

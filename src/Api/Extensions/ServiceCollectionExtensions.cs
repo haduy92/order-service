@@ -1,8 +1,8 @@
 using System.Text;
 using Asp.Versioning;
 using Api.Contexts;
-using Application.Interfaces.Application;
-using Application.Interfaces.Persistence;
+using Application.Contracts.Application;
+using Application.Contracts.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Repositories;

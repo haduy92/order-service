@@ -15,13 +15,22 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
     <!-- Configuration -->
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <!-- HTTP Client -->
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <!-- MediatR -->
     <PackageVersion Include="MediatR" Version="13.0.0" />
     <!-- FastEndpoints -->
     <PackageVersion Include="FastEndpoints" Version="7.0.1" />
+    <PackageVersion Include="RabbitMQ.Client" Version="7.1.2" />
     <!-- Swagger -->
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <!-- API Versioning -->
@@ -33,5 +42,11 @@
     <PackageVersion Include="OpenAI" Version="2.0.0" />
     <!-- Mapping -->
     <PackageVersion Include="Riok.Mapperly" Version="4.2.1" />
+    <!-- Messaging - Updated to latest available version -->
+    <PackageVersion Include="Apache.NMS" Version="2.1.0" />
+    <PackageVersion Include="Apache.NMS.ActiveMQ" Version="2.1.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <!-- State Machine -->
+    <PackageVersion Include="Stateless" Version="5.16.0" />
   </ItemGroup>
 </Project>

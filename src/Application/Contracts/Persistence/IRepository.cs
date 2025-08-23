@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Domain.Entities;
 
-namespace Application.Interfaces.Persistence;
+namespace Application.Contracts.Persistence;
 
 /// <summary>
 /// This interface is a shortcut to IRepository<TEntity, int>.

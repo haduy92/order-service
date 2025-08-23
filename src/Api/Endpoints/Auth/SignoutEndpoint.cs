@@ -1,6 +1,6 @@
 using FastEndpoints;
-using Application.Interfaces.Identity;
-using Application.Interfaces.Application;
+using Application.Contracts.Identity;
+using Application.Contracts.Application;
 
 namespace Api.Endpoints.Auth;
 

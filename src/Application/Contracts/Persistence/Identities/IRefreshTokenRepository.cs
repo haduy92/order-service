@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Interfaces.Persistence.Identities;
+namespace Application.Contracts.Persistence.Identities;
 
 public interface IRefreshTokenRepository
 {

@@ -1,6 +1,6 @@
 using Application.Models.Auth;
 
-namespace Application.Interfaces.Identity;
+namespace Application.Contracts.Identity;
 
 public interface ITokenService
 {

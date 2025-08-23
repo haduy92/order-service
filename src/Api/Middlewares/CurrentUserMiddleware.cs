@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using Api.Contexts;
-using Application.Interfaces.Application;
+using Application.Contracts.Application;
 
 namespace Api.Middlewares;
 

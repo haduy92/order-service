@@ -1,4 +1,4 @@
-using Application.Interfaces.Application;
+using Application.Contracts.Application;
 using Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
 using OpenAI.Chat;
