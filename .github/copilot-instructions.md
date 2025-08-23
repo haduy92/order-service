@@ -1,6 +1,3 @@
-Of course. Here is the raw Markdown text from the document for you to copy.
-
-````markdown
 # Copilot Instructions
 
 This document outlines the architectural principles, coding standards, and conventions to be followed in this solution. As an AI assistant, you must adhere to these guidelines when generating or modifying code to ensure consistency, maintainability, and quality.
@@ -86,8 +83,8 @@ Adhere strictly to the SOLID principles in all code.
 * **Framework:** Use **xUnit** as the testing framework.
 * **Mocking:** Use **Moq** for creating mocks and stubs of dependencies.
 * **Data Generation:** Use **AutoFixture** to generate sample data and reduce test setup boilerplate.
-* **Naming Convention:** Test methods must follow the `When_{method_name}_Given_{context}_Then_{expectation}` pattern.
-    * **Example:** `public void When_CreateOrder_Given_ValidRequest_Then_ReturnOk()`
+* **Naming Convention:** Test methods must follow the `When{method_name}_Given{context}_Then{expectation}` pattern.
+    * **Example:** `public void WhenCreateOrder_GivenValidRequest_ThenReturnOk()`
 * **Test Structure:** The body of each test method must follow the **Arrange-Act-Assert** pattern, with each section clearly marked by a comment.
     ```csharp
     // Arrange
@@ -99,6 +96,19 @@ Adhere strictly to the SOLID principles in all code.
     // Assert
     ...
     ```
+* **Verification:** When setting up a mock, mark it with `.Verifiable()`. In the Assert phase, call the mock object's `.Verify()` method to confirm the interaction occurred.
+    ```csharp
+    // Arrange
+    var mockOrderService = new Mock<IOrderService>();
+    mockOrderService.Setup(s => s.CreateOrderAsync(It.IsAny<Order>()))
+                    .ReturnsAsync(someOrder)
+                    .Verifiable(); // Mark for verification
+
+    // ... Act ...
+
+    // Assert
+    mockOrderService.Verify(); // Verifies that the setup was called
+    ```
 
 ## Copilot Usage
 
@@ -107,4 +117,3 @@ Adhere strictly to the SOLID principles in all code.
 * **Prefer existing patterns** and conventions found in the current solution.
 * **Generate code that is ready to use** and fits seamlessly into the existing structure.
 * **Document any necessary deviations** from these standards in pull requests or code reviews.
-````
