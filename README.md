@@ -143,17 +143,53 @@ tests/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
+#### Option 1: Local Development
 - .NET 8.0 SDK
 - PostgreSQL database
 - RabbitMQ message broker
 
-### Configuration
+#### Option 2: Docker (Recommended)
+- Docker Desktop
+- Docker Compose
+
+### Running with Docker 🐳
+
+The easiest way to run the entire application stack is using Docker Compose:
+
+```bash
+# Build and start all services in detached mode
+docker-compose up -d --build
+
+# View logs for all services
+docker-compose logs -f
+
+# View logs for specific service
+docker-compose logs -f order-service-api
+docker-compose logs -f order-service-consumer
+
+# Stop and remove all services
+docker-compose down
+
+# Stop and remove all services including volumes
+docker-compose down -v
+```
+
+#### Services URLs:
+- **API**: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger
+- **RabbitMQ Management**: http://localhost:15672 (guest/guest)
+- **PostgreSQL**: localhost:5432 (admin/admin)
+
+### Running Locally
+
+#### Configuration
 1. Set up connection strings in `appsettings.json`
 2. Configure JWT settings
 3. Set up RabbitMQ connection
 4. Configure OpenAI API key (if using AI features)
 
-### Running the Application
+#### Start Services
 ```bash
 # Start the API
 dotnet run --project src/Api

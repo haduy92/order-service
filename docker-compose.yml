@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: order-service-postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=order-service
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: order-service-rabbitmq
+    ports:
+      - "5672:5672" # AMQP protocol
+      - "15672:15672" # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  order-service-api:
+    container_name: order-service-api
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      - Database__ConnectionString=Host=postgres;Port=5432;Database=order-service;Username=admin;Password=admin
+      - MessageBroker__Host=rabbitmq
+      - MessageBroker__Username=guest
+      - MessageBroker__Password=guest
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+
+  order-service-consumer:
+    container_name: order-service-consumer
+    build:
+      context: .
+      dockerfile: src/Consumer/Dockerfile
+    depends_on:
+      - rabbitmq
+      - order-service-api
+    environment:
+      - MessageBroker__Host=rabbitmq
+      - MessageBroker__Username=guest
+      - MessageBroker__Password=guest
+      - OrderApi__BaseUrl=http://order-service-api:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+
+volumes:
+  postgres_data:
