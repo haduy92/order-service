@@ -1,14 +1,15 @@
 using Consumer.Configuration;
-using Consumer.Contracts;
+using Consumer.Services.Infrastructure.Messaging;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
-namespace Consumer.Services;
+namespace Consumer.Services.Infrastructure.Messaging;
 
 /// <summary>
 /// Service responsible for managing RabbitMQ connections
 /// Follows Single Responsibility Principle - only handles connection management
+/// Part of Infrastructure layer - handles external messaging infrastructure
 /// </summary>
 public class RabbitMqConnectionService : IRabbitMqConnectionService
 {

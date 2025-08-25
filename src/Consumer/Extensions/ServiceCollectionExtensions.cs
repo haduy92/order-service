@@ -1,9 +1,12 @@
 ﻿using Consumer.Abstractions;
 using Consumer.Configuration;
-using Consumer.Contracts;
 using Consumer.Factories;
 using Consumer.MessageHandlers;
-using Consumer.Services;
+using Consumer.Services.Application;
+using Consumer.Services.HostedServices;
+using Consumer.Services.Http;
+using Consumer.Services.Infrastructure.ExternalApi;
+using Consumer.Services.Infrastructure.Messaging;
 using Consumer.Validators;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

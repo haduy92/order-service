@@ -1,16 +1,18 @@
 using Consumer.Configuration;
+using Consumer.Services.Infrastructure.ExternalApi;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Text;
 using Shared.Extensions;
 
-namespace Consumer.Services;
+namespace Consumer.Services.Infrastructure.ExternalApi;
 
 /// <summary>
 /// Implementation of system token service for Consumer authentication
 /// Handles both pre-configured tokens and dynamic authentication
 /// Uses EnsureSuccessStatusCode() for automatic error handling via delegating handlers
+/// Part of Infrastructure layer - handles authentication with external APIs
 /// </summary>
 public class SystemTokenService : ISystemTokenService
 {

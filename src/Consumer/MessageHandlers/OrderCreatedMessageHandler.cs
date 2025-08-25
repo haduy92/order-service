@@ -1,6 +1,6 @@
 using Application.Models.Message;
 using Consumer.MessageHandlers;
-using Consumer.Services;
+using Consumer.Services.Application;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

@@ -4,12 +4,13 @@ using Newtonsoft.Json;
 using System.Net;
 using Shared.Extensions;
 
-namespace Consumer.Services;
+namespace Consumer.Services.Http;
 
 /// <summary>
 /// HTTP delegating handler that automatically handles API error responses with detailed logging
 /// Follows the Decorator pattern and Single Responsibility Principle
 /// Provides centralized error handling for all HTTP requests
+/// Part of Infrastructure layer - handles HTTP error responses
 /// </summary>
 public class ApiErrorHandlingDelegatingHandler : DelegatingHandler
 {

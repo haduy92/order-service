@@ -1,11 +1,13 @@
+using Consumer.Services.Infrastructure.ExternalApi;
 using Microsoft.Extensions.Logging;
 using Shared.Extensions;
 
-namespace Consumer.Services;
+namespace Consumer.Services.Http;
 
 /// <summary>
 /// HTTP delegating handler that automatically adds authentication headers to API requests
 /// Follows the Decorator pattern to extend HttpClient functionality
+/// Part of Infrastructure layer - handles HTTP request authentication
 /// </summary>
 public class AuthenticationDelegatingHandler : DelegatingHandler
 {

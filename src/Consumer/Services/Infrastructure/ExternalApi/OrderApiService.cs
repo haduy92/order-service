@@ -5,18 +5,13 @@ using Newtonsoft.Json;
 using Shared.Domain;
 using System.Text;
 
-namespace Consumer.Services;
-
-public interface IOrderApiService
-{
-    Task<bool> UpdateOrderStatusAsync(int orderId, OrderStatus newStatus);
-    Task<OrderDetailsDto?> GetOrderAsync(int orderId);
-}
+namespace Consumer.Services.Infrastructure.ExternalApi;
 
 /// <summary>
 /// Service for interacting with the Order API
 /// Uses EnsureSuccessStatusCode() for automatic error handling via delegating handlers
 /// Follows the Single Responsibility Principle by focusing only on API communication logic
+/// Part of Infrastructure layer - handles external API communication
 /// </summary>
 public class OrderApiService : IOrderApiService
 {

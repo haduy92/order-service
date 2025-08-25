@@ -1,8 +1,8 @@
-namespace Consumer.Services;
+namespace Consumer.Services.Infrastructure.ExternalApi;
 
 /// <summary>
-/// Service for managing system authentication tokens
-/// Follows the Single Responsibility Principle by handling only token management
+/// Interface for system token authentication service
+/// Part of Infrastructure layer - handles authentication with external APIs
 /// </summary>
 public interface ISystemTokenService
 {

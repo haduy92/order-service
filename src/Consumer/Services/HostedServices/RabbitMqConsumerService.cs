@@ -1,7 +1,7 @@
 using Consumer.Abstractions;
 using Consumer.Configuration;
-using Consumer.Contracts;
 using Consumer.Factories;
+using Consumer.Services.Infrastructure.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,11 +9,12 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Consumer.Services;
+namespace Consumer.Services.HostedServices;
 
 /// <summary>
 /// Background service responsible for consuming messages from RabbitMQ
 /// Follows the Single Responsibility Principle - only handles message consumption orchestration
+/// Part of Infrastructure layer - manages message consumption lifecycle
 /// </summary>
 public class RabbitMqConsumerService : BackgroundService
 {

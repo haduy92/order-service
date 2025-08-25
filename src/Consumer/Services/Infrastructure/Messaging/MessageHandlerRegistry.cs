@@ -5,12 +5,13 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Consumer.Services;
+namespace Consumer.Services.Infrastructure.Messaging;
 
 /// <summary>
 /// Registry implementation for managing message handler configurations
 /// Follows Single Responsibility Principle - only manages handler registrations
 /// Uses auto-discovery to follow Open/Closed Principle
+/// Part of Infrastructure layer - manages message handler configurations
 /// </summary>
 public class MessageHandlerRegistry : IMessageHandlerRegistry
 {

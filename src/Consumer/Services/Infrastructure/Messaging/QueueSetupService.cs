@@ -1,12 +1,13 @@
-using Consumer.Contracts;
+using Consumer.Services.Infrastructure.Messaging;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace Consumer.Services;
+namespace Consumer.Services.Infrastructure.Messaging;
 
 /// <summary>
 /// Service responsible for setting up message queues
 /// Follows Single Responsibility Principle - only handles queue setup operations
+/// Part of Infrastructure layer - handles messaging queue setup
 /// </summary>
 public class QueueSetupService : IQueueSetupService
 {
