@@ -1,14 +1,13 @@
 using Application.Contracts.Persistence;
 using Application.Queries;
 using Application.Tests.Helpers;
+using Ardalis.Specification;
 using AutoFixture;
 using Domain.Entities;
-using Domain.Specifications.Orders;
 using FluentAssertions;
 using Moq;
 using Shared.Exceptions;
 using Xunit;
-using Ardalis.Specification;
 
 namespace Application.Tests.Queries;
 
@@ -33,7 +32,7 @@ public class GetOrderByIdQueryTests : IDisposable
         var order = _fixture.CreateOrderWithItems(orderId, numberOfItems: 2);
 
         _orderRepositoryMock
-            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), default))
             .ReturnsAsync(order)
             .Verifiable();
 
@@ -61,7 +60,7 @@ public class GetOrderByIdQueryTests : IDisposable
             item.Price.Should().BeGreaterThan(0);
         });
 
-        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), default), Times.Once);
     }
 
     [Fact]
@@ -71,7 +70,7 @@ public class GetOrderByIdQueryTests : IDisposable
         var orderId = 999;
 
         _orderRepositoryMock
-            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), default))
             .ReturnsAsync((Order?)null)
             .Verifiable();
 
@@ -83,7 +82,7 @@ public class GetOrderByIdQueryTests : IDisposable
 
         exception.Message.Should().Be($"Order with ID {orderId} not found.");
 
-        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), default), Times.Once);
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public class GetOrderByIdQueryTests : IDisposable
             .Create();
 
         _orderRepositoryMock
-            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), default))
             .ReturnsAsync(order)
             .Verifiable();
 
@@ -119,7 +118,7 @@ public class GetOrderByIdQueryTests : IDisposable
         result.PostCode.Should().BeNull();
         result.OrderItems.Should().BeEmpty();
 
-        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()), Times.Once);
+        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), default), Times.Once);
     }
 
     public void Dispose()
