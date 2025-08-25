@@ -3,10 +3,12 @@ using Application.Queries;
 using Application.Tests.Helpers;
 using AutoFixture;
 using Domain.Entities;
+using Domain.Specifications.Orders;
 using FluentAssertions;
 using Moq;
 using Shared.Exceptions;
 using Xunit;
+using Ardalis.Specification;
 
 namespace Application.Tests.Queries;
 
@@ -29,17 +31,16 @@ public class GetOrderByIdQueryTests : IDisposable
         // Arrange
         var orderId = 1;
         var order = _fixture.CreateOrderWithItems(orderId, numberOfItems: 2);
-        var cancellationToken = CancellationToken.None;
 
         _orderRepositoryMock
-            .Setup(x => x.GetAsync(orderId, cancellationToken))
+            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(order)
             .Verifiable();
 
         var query = new GetOrderByIdQuery { Id = orderId };
 
         // Act
-        var result = await _handler.Handle(query, cancellationToken);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
@@ -60,7 +61,7 @@ public class GetOrderByIdQueryTests : IDisposable
             item.Price.Should().BeGreaterThan(0);
         });
 
-        _orderRepositoryMock.Verify();
+        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -68,10 +69,9 @@ public class GetOrderByIdQueryTests : IDisposable
     {
         // Arrange
         var orderId = 999;
-        var cancellationToken = CancellationToken.None;
 
         _orderRepositoryMock
-            .Setup(x => x.GetAsync(orderId, cancellationToken))
+            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((Order?)null)
             .Verifiable();
 
@@ -79,11 +79,11 @@ public class GetOrderByIdQueryTests : IDisposable
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<NotFoundException>(
-            () => _handler.Handle(query, cancellationToken));
+            () => _handler.Handle(query, CancellationToken.None));
 
         exception.Message.Should().Be($"Order with ID {orderId} not found.");
 
-        _orderRepositoryMock.Verify();
+        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -96,17 +96,16 @@ public class GetOrderByIdQueryTests : IDisposable
             .With(o => o.OrderItems, new List<OrderItem>())
             .Without(o => o.ShippingAddress)
             .Create();
-        var cancellationToken = CancellationToken.None;
 
         _orderRepositoryMock
-            .Setup(x => x.GetAsync(orderId, cancellationToken))
+            .Setup(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(order)
             .Verifiable();
 
         var query = new GetOrderByIdQuery { Id = orderId };
 
         // Act
-        var result = await _handler.Handle(query, cancellationToken);
+        var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
@@ -120,12 +119,12 @@ public class GetOrderByIdQueryTests : IDisposable
         result.PostCode.Should().BeNull();
         result.OrderItems.Should().BeEmpty();
 
-        _orderRepositoryMock.Verify();
+        _orderRepositoryMock.Verify(x => x.GetBySpecAsync(It.IsAny<ISpecification<Order>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     public void Dispose()
     {
-        // Cleanup any resources if needed
+        _orderRepositoryMock.Reset();
         GC.SuppressFinalize(this);
     }
 }
